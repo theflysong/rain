@@ -1,5 +1,8 @@
 #ifndef __HEAD__
 #define __HEAD__
+/*
+	一大堆可有可无的头文件及using 
+*/ 
 #include <cmath>
 #include <cstdarg>
 #include <cstdio>
@@ -37,11 +40,21 @@ using std::map;
 using std::stack;
 using std::queue;
 using std::cerr;
+using std::endl;
 
+/*
+	自制断言 
+*/
 void _assert(bool condition,string fileIn,int lineIn);
 
+/*
+	空 
+*/
 #define null (0)
 
+/*
+	只要是以DEBUG方式编译就可以使用 
+*/
 #ifdef __DEBUG__
 	#define assert(condition) _assert(condition,__FILE__,__LINE__)
 	#define assertNull(condition) assert(condition != null)
@@ -49,4 +62,48 @@ void _assert(bool condition,string fileIn,int lineIn);
 	#define assert(condition)
 	#define assertNull(condtion)
 #endif
+
+/*
+	错误退出 
+*/
+inline void ErrorExit() {
+    Sleep(10000);
+    exit(-1);
+}
+/*
+	正常退出 
+*/
+inline void NormalExit() {
+    Sleep(1000);
+    exit(0);
+}
+/*
+	转义字符串 
+*/ 
+void escape(string& str);
+
+/*
+	转义错误异常 
+*/
+struct EscapeException : public std::exception
+{
+private:
+    char errorCharacter;
+public:
+    const char* what() const throw ();
+    EscapeException(char c);
+};
+
+/*
+	转义错误异常 
+*/
+struct TooBigNumException : public std::exception
+{
+private:
+    int errorNum;
+public:
+    const char* what() const throw ();
+    TooBigNumException(int num);
+};
+
 #endif
