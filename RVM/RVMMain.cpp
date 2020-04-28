@@ -1,24 +1,46 @@
 #include "Main.h"
+#include "Execute.h"
 
-/*
-	程序栈 
-*/
-class Program
+int Program::addValue(Value value)
 {
-private:
-	RuntimeStack ValueStack; //运行时程序值栈 
-};
+	ValueStack.push(value);
+	return ValueStack.size()-1;
+}
+
+Value Program::get(int index)
+{
+	return ValueStack.get(index);
+}
+
+Value Program::getFromTop()
+{
+	return ValueStack.getFromTop();
+}
+
+void Program::pop()
+{
+	ValueStack.pop();
+}
+
+Program::Program()
+{
+	
+}
+
+Program* program;
 
 /*
 	程序开始 
 */
 int main()
 {
+	program = new Program;
 	string where;
 	cin>>where;
-	FileCStream file(where);
-	while(!file.eof()){
-		cout<<file.read();
-	}
-	return 0;
+	FileCStream* file = new FileCStream(where);
+	Executer exe(file);
+	int re = exe.execute();
+	delete program;
+	delete file;
+	return re;
 }

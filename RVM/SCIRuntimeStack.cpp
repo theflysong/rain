@@ -1,11 +1,21 @@
 #include "SCIRuntimeStack.h"
 
 /*
-	获得从位于栈顶+1-index的元素 
+	获得第i个元素 
 */
 Value RuntimeStack::get(int index)
 {
-	return stack[stack.size()-index];
+	cout<<stack[index];
+	return stack[index];
+}
+
+Value RuntimeStack::getFromTop(){
+	return stack[stack.size()-1];
+}
+
+int RuntimeStack::size()
+{
+	return (int)stack.size(); 
 }
 
 /*

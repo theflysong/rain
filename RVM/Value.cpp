@@ -55,6 +55,26 @@ void Value::setDecimal(double decimal)
 	*(this->decimal)=decimal;
 }
 
+string Value::getID()
+{
+	return *(this->ID);
+}
+
+void Value::setID(int ID)
+{
+	*(this->ID)=ID;
+}
+
+string Value::getFunction()
+{
+	return *(this->FunctionName);
+}
+
+void Value::setFunction(int function)
+{
+	*(this->FunctionName)=function;
+}
+
 /*
 	获得Value类型 
 */
@@ -62,6 +82,11 @@ Value::VTYPE Value::getType()
 {
 	return this->type;
 } 
+
+void Value::setType(Value::VTYPE type)
+{
+	this->type=type;
+}
 
 /*
 	析构函数 
@@ -79,6 +104,12 @@ Value::~Value()
 		case TYPE_STRING:
 			delete this->str;
 			break;
+		case TYPE_ID:
+			delete this->ID;
+			break;
+		case TYPE_FUNCTION:
+			delete this->FunctionName;
+			break; 
 		default:
 			break;
 	}

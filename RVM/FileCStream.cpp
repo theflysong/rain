@@ -9,7 +9,7 @@ FileCStream::FileCStream(string FileIn) : next(0)
 	while(!fin.eof()){
 		data.push_back(fin.get());
 	}
-	eos=false;
+	data.push_back(ICStream::eos);
 	fin.close();
 }
 
@@ -18,7 +18,6 @@ FileCStream::FileCStream(string FileIn) : next(0)
 */
 char FileCStream::read()
 {
-	eos = (next+1>=data.size());
 	return data[next++];
 } 
 	
@@ -36,7 +35,6 @@ char FileCStream::peek()
 void FileCStream::back(int index)
 {
 	next-=index;
-	eos=(next>=data.size());
 }
 
 /*
@@ -56,5 +54,5 @@ string FileCStream::setStrings(string FileIn)
 */
 bool FileCStream::eof()
 {
-	return eos;
+	return next>=data.size();
 }

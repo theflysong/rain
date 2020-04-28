@@ -8,4 +8,22 @@
 #include "SCI.h"
 #include "FileCStream.h"
 
+/*
+	³ÌÐò
+*/
+class Program
+{
+private:
+	RuntimeStack ValueStack;
+	//map<string,int> map; 
+public:
+	Program();
+	Value get(int index);
+	Value getFromTop();
+	void pop();
+	int addValue(Value value);
+};
+
+extern Program* program;
+
 #endif

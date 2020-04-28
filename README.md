@@ -4,14 +4,14 @@
 
 A new programming language
 
-Use Stack Instruction
+Use 3-address instruction
 
 
 ## zh_CN
 
 一个新的编程语言
 
-使用栈式指令
+使用三地址指令
 
 ## zh_TW
 （台湾是中国的！）
@@ -26,4 +26,4 @@ Use Stack Instruction
 
 
 
-使用棧式指令
+使用使用三地址指令
