@@ -1,12 +1,11 @@
 #include "CFBasicIO.h"
 
 Value* print(Program* program)
-{
+{ 
 	int num = program->getFromTop()->getNumber();
 	program->pop();
 	while(num--){
 		Value* v = program->getFromTop();
-		program->pop();
 		switch(v->getType()){
 		case Value::TYPE_STRING:
 			cout<<v->getStr();
@@ -18,6 +17,7 @@ Value* print(Program* program)
 			cout<<v->getDecimal();
 			break;
 		}
+		program->pop();
 	}
 	return NULL;
 }

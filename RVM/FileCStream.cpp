@@ -56,3 +56,8 @@ bool FileCStream::eof()
 {
 	return next>=data.size();
 }
+
+FileCStream::~FileCStream()
+{
+	
+}

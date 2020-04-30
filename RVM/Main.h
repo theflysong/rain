@@ -21,7 +21,9 @@ public:
 	Value* get(int index);
 	Value* getFromTop();
 	void pop();
+	void remove(int index);
 	int addValue(Value* value);
+	size_t size();
 };
 
 extern Program* program;

@@ -15,7 +15,8 @@ public:
 	Value* get(int index=0);
 	Value* getFromTop();
 	size_t size();
-	void push(Value *value);
+	void remove(int index);
+	int push(Value *value);
 	void pop();
 }; 
 

@@ -1,0 +1,5 @@
+push 233
+push "Hello,World!I'm "
+push 2
+call print
+exit 0

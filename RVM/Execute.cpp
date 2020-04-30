@@ -63,12 +63,28 @@ inline string toString(string str)
 	return s;
 }
 
-inline char getInstruction(ICStream* stream,string &str){
+inline char getArgs(ICStream* stream,string &str){
 	char ch=stream->read();
 	while(!(isalnum(ch)||ch==ICStream::eos||ch=='"')){
 		ch=stream->read();
 	}
-	while(isalnum(ch)||ch==' '||ch=='"'){
+	if(ch=='"'){
+		str+=ch;
+		while(true){
+			ch=stream->read();
+			if(ch=='"'&&str[str.length()-1]!='\\'){
+				break;
+			}
+			str+=ch;
+		}
+		str+='"';
+		ch=stream->read();
+		while(ch!='\n'&&ch!='\r'){
+			stream->read();
+		}
+		return ch;
+	} 
+	while(isalnum(ch)||ch==' '){
 		str+=ch;
 		ch=stream->read();
 	}
@@ -105,7 +121,7 @@ SCIInstruction Executer::getSource()
 		}
 	}
 	arg="";
-	ch=getInstruction(this->stream,arg);
+	ch=getArgs(this->stream,arg);
 	if(isNumber(arg)){
 		arg1=program->addValue(new Value(toNumber(arg)));
 	}
@@ -130,7 +146,7 @@ SCIInstruction Executer::getSource()
 		}
 	}
 	arg="";
-	ch=getInstruction(this->stream,arg);
+	ch=getArgs(this->stream,arg);
 	if(isNumber(arg)){
 		arg2=program->addValue(new Value(toNumber(arg)));
 	}
@@ -155,7 +171,7 @@ SCIInstruction Executer::getSource()
 		}
 	}
 	arg="";
-	ch=getInstruction(this->stream,arg);
+	ch=getArgs(this->stream,arg);
 	if(isNumber(arg)){
 		arg3=program->addValue(new Value(toNumber(arg)));
 	}
@@ -198,34 +214,33 @@ int Executer::execute()
 			case SCIInstruction::EXIT:
 			{
 				int state=program->get(ins.arg1)->getNumber();
-				program->pop();
+				program->remove(ins.arg1);
 				return state;
 			}
-			/*case SCIInstruction::PUSH:
+			case SCIInstruction::PUSH:
 			{
-				Value vpush=program->get(ins.arg1);
-				cout<<vpush.getNumber();
-				program->pop();
-				program->addValue(vpush);
 				break;
 			}
 			case SCIInstruction::CALL:
 			{
-				Value v=program->get(ins.arg1);
-				if(v.getType()!=Value::TYPE_FUNCTION){
-					string e="错误的类型!值类型应为Function,但类型为"+Value::toString(v.getType());
-					error(e);
+				Value* v=program->get(ins.arg1);
+				if(v->getType()!=Value::TYPE_FUNCTION){
+					string e="错误的类型!值类型应为Function,但类型为"+Value::toString(v->getType());
+					error(e); 
 					return -1; 
 				} 
-				if(CFunctionMap.count(v.getFunction())){
-					program->pop(); 
-					CFunctionMap[v.getFunction()](program);
+				if(CFunctionMap.count(v->getFunction())){
+					string str=v->getFunction();
+					program->remove(ins.arg1);
+					CFunctionMap[str](program);
+					break;
 				}
 				else{
 					//TODO:添加自定义函数 
 				}
+				program->remove(ins.arg1);
 				break;
-			}*/
+			}
 		}
 	}
 }

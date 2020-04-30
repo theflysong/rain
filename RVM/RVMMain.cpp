@@ -3,8 +3,7 @@
 
 int Program::addValue(Value* value)
 {
-	ValueStack.push(value);
-	return ValueStack.size()-1;
+	return ValueStack.push(value);
 }
 
 Value* Program::get(int index)
@@ -15,6 +14,15 @@ Value* Program::get(int index)
 Value* Program::getFromTop()
 {
 	return ValueStack.getFromTop();
+}
+
+size_t Program::size(){
+	return ValueStack.size();
+} 
+
+void Program::remove(int index){
+	delete ValueStack.get(index);
+	ValueStack.remove(index);
 }
 
 void Program::pop()
@@ -42,6 +50,6 @@ int main()
 	Executer exe(file);
 	int re = exe.execute();
 	delete program;
-	delete file;
+	//delete file;
 	return re;
 }

@@ -20,7 +20,8 @@ public:
 	virtual char read(); //读取下一个字符 
 	virtual char peek(); //查看下一个字符 
 	virtual void back(int index=1); //回到上index个字符的位置 
-	bool eof(); //是否结束 
+	bool eof(); //是否结束
+	virtual ~FileCStream();
 };
 
 #endif

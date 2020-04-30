@@ -14,6 +14,7 @@ public:
 	virtual char read()=0; //读取下一个字符 
 	virtual char peek()=0; //查看下一个字符
 	virtual void back(int index=1)=0; //回到上index个字符的位置 
+	virtual ~ICStream(); 
 };
 
 #endif
