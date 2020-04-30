@@ -7,12 +7,32 @@ Value::Value() : type(TYPE_NULL)
 {
 }
 
+string Value::toString(VTYPE type){
+	switch(type){
+	case TYPE_FUNCTION:
+		return "function";
+	case TYPE_NUMBER:
+		return "number";
+	case TYPE_CLASS:
+		return "class";
+	case TYPE_STRING:
+		return "string";
+	case TYPE_DECIMAL:
+		return "decimal";
+	case TYPE_ID:
+		return "ID";
+	case TYPE_NULL:
+		return "null"; 
+	}
+	return "unknowType";
+}
+
 Value::Value(int number) : type(TYPE_NUMBER)
 {
 	this->number = new int(number);
 }
 
-Value::Value(string str) : type(TYPE_STRING)
+Value::Value(string str,VTYPE type) : type(type)
 {
 	this->str = new string(str);
 }
@@ -40,7 +60,7 @@ string Value::getStr()
 	return *(this->str);
 }
 
-void Value::setStr(int str)
+void Value::setStr(string str)
 {
 	*(this->str)=str;
 }
@@ -70,7 +90,7 @@ string Value::getFunction()
 	return *(this->FunctionName);
 }
 
-void Value::setFunction(int function)
+void Value::setFunction(string function)
 {
 	*(this->FunctionName)=function;
 }
@@ -89,28 +109,9 @@ void Value::setType(Value::VTYPE type)
 }
 
 /*
-	析构函数 
+	析构函数
 */
 Value::~Value()
 {
-	switch(type)
-	{
-		case TYPE_NUMBER:
-			delete this->number;
-			break;
-		case TYPE_DECIMAL:
-			delete this->decimal;
-			break;
-		case TYPE_STRING:
-			delete this->str;
-			break;
-		case TYPE_ID:
-			delete this->ID;
-			break;
-		case TYPE_FUNCTION:
-			delete this->FunctionName;
-			break; 
-		default:
-			break;
-	}
+	delete this->ptr;
 }

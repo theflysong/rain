@@ -10,12 +10,12 @@
 class RuntimeStack
 {
 private:
-	vector<Value> stack;
+	vector<Value*> stack;
 public:
-	Value get(int index=0);
-	Value getFromTop();
-	int size();
-	void push(Value value);
+	Value* get(int index=0);
+	Value* getFromTop();
+	size_t size();
+	void push(Value *value);
 	void pop();
 }; 
 

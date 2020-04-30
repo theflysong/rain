@@ -18,10 +18,10 @@ private:
 	//map<string,int> map; 
 public:
 	Program();
-	Value get(int index);
-	Value getFromTop();
+	Value* get(int index);
+	Value* getFromTop();
 	void pop();
-	int addValue(Value value);
+	int addValue(Value* value);
 };
 
 extern Program* program;

@@ -3,7 +3,7 @@
 
 #include "Main.h"
 
-Value print(Program* program);
+Value* print(Program* program);
 
 #endif 
 //E:\language\rain\test.rp

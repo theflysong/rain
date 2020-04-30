@@ -1,22 +1,23 @@
 #include "CFBasicIO.h"
 
-Value print(Program* program)
+Value* print(Program* program)
 {
-	int num = program->getFromTop().getNumber();
+	int num = program->getFromTop()->getNumber();
 	program->pop();
 	while(num--){
-		Value v = program->getFromTop();
+		Value* v = program->getFromTop();
 		program->pop();
-		switch(v.getType()){
+		switch(v->getType()){
 		case Value::TYPE_STRING:
-			cout<<v.getStr();
+			cout<<v->getStr();
 			break;
 		case Value::TYPE_NUMBER:
-			cout<<v.getNumber();
+			cout<<v->getNumber();
 			break;
 		case Value::TYPE_DECIMAL:
-			cout<<v.getDecimal();
+			cout<<v->getDecimal();
 			break;
 		}
 	}
+	return NULL;
 }

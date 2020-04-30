@@ -17,9 +17,10 @@ public:
 		TYPE_CLASS, //类 
 		TYPE_ID
 	};
+	static string toString(VTYPE type);
 	Value();
 	Value(int number);
-	Value(string str);
+	Value(string str,VTYPE type);
 	Value(double decimal);
 	/*析构函数*/
 	~Value();
@@ -27,13 +28,13 @@ public:
 	int getNumber();
 	void setNumber(int number);
 	string getStr();
-	void setStr(int str);
+	void setStr(string str);
 	double getDecimal();
 	void setDecimal(double decimal);
 	string getID();
 	void setID(int ID);
 	string getFunction();
-	void setFunction(int function);
+	void setFunction(string function);
 	/*获得类型*/
 	VTYPE getType();
 	void setType(VTYPE type);
@@ -46,6 +47,7 @@ private:
 		string* str;
 		string* ID;
 		string* FunctionName;
+		void* ptr;
 	};
 };
 

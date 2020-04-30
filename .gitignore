@@ -1,0 +1,6 @@
+*.o
+*.dev
+*.layout
+*.gch
+*.win
+*.rp

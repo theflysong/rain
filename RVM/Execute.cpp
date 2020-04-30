@@ -1,6 +1,8 @@
 #include "Execute.h"
 #include "CFunctions.h"
 
+#define error(err) cerr<<"[Error]:"<<err;
+
 Executer::Executer(ICStream* stream)
 {
 	this->stream=stream;
@@ -20,7 +22,7 @@ Executer::Executer(ICStream* stream)
 inline bool isNumber(string str)
 {
 	for(int i=0;i<str.length();i++){
-		if(!isalnum(str[i]))
+		if(!isdigit(str[i]))
 			return false;
 	}
 	return true;
@@ -34,7 +36,7 @@ inline int toNumber(string str)
 inline bool isDecimal(string str)
 {
 	for(int i=0;i<str.length();i++){
-		if(!(isalnum(str[i])||str[i]=='.'))
+		if(!(isdigit(str[i])||str[i]=='.'))
 			return false;
 	}
 	return true;
@@ -61,19 +63,36 @@ inline string toString(string str)
 	return s;
 }
 
+inline char getInstruction(ICStream* stream,string &str){
+	char ch=stream->read();
+	while(!(isalnum(ch)||ch==ICStream::eos||ch=='"')){
+		ch=stream->read();
+	}
+	while(isalnum(ch)||ch==' '||ch=='"'){
+		str+=ch;
+		ch=stream->read();
+	}
+	return ch;
+}
+
+inline char getOpt(ICStream* stream,string &str){
+	char ch=stream->read();
+	while(!(isalnum(ch)||ch==ICStream::eos||ch=='\n'||ch=='\r')){
+		ch=stream->read();
+	}
+	while(isalnum(ch)){
+		str+=ch;
+		ch=stream->read();
+	}
+	return ch;
+}
+
 SCIInstruction Executer::getSource()
 {
 	string opt="";
 	int arg1,arg2,arg3;
 	string arg="";
-	char ch=stream->read();
-	while(!(isalnum(ch)||ch==ICStream::eos)){
-		ch=stream->read();
-	}
-	while(isalnum(ch)){
-		opt+=ch;
-		ch=stream->read();
-	}
+	char ch=getOpt(this->stream,opt);
 	if(ch=='\n'||ch=='\r'||ch==ICStream::eos){
 		if(optCodeMap.count(opt)){
 			SCIInstruction ins(optCodeMap[opt],-1,-1,-1);
@@ -86,29 +105,18 @@ SCIInstruction Executer::getSource()
 		}
 	}
 	arg="";
-	while(!(isalnum(ch)||ch==ICStream::eos||ch=='"')){
-		ch=stream->read();
-	}
-	while(isalnum(ch)||ch==' '||ch=='"'){
-		arg+=ch;
-		ch=stream->read();
-	}
+	ch=getInstruction(this->stream,arg);
 	if(isNumber(arg)){
-		Value value(toNumber(arg));
-		arg1=program->addValue(value);
+		arg1=program->addValue(new Value(toNumber(arg)));
 	}
 	else if(isDecimal(arg)){
-		Value value(toDecimal(arg));
-		arg1=program->addValue(value);
+		arg1=program->addValue(new Value(toDecimal(arg)));
 	}
 	else if(isString(arg)){
-		Value value(toString(arg));
-		arg1=program->addValue(value);
+		arg1=program->addValue(new Value(toString(arg),Value::TYPE_STRING));
 	}
 	else if(CFunctionMap.count(arg)){
-		Value value(arg);
-		value.setType(Value::TYPE_FUNCTION);
-		arg1=program->addValue(value);
+		arg1=program->addValue(new Value(arg,Value::TYPE_FUNCTION));
 	}
 	if(ch=='\n'||ch=='\r'||ch==ICStream::eos||ch=='"'){
 		if(optCodeMap.count(opt)){
@@ -122,29 +130,18 @@ SCIInstruction Executer::getSource()
 		}
 	}
 	arg="";
-	while(!(isalnum(ch)||ch==ICStream::eos||ch=='"')){
-		ch=stream->read();
-	}
-	while(isalnum(ch)||ch==' '||ch=='"'){
-		arg+=ch;
-		ch=stream->read();
-	}
+	ch=getInstruction(this->stream,arg);
 	if(isNumber(arg)){
-		Value value(toNumber(arg));
-		arg2=program->addValue(value);
+		arg2=program->addValue(new Value(toNumber(arg)));
 	}
 	else if(isDecimal(arg)){
-		Value value(toDecimal(arg));
-		arg2=program->addValue(value);
+		arg2=program->addValue(new Value(toDecimal(arg)));
 	}
 	else if(isString(arg)){
-		Value value(toString(arg));
-		arg2=program->addValue(value);
+		arg2=program->addValue(new Value(toString(arg),Value::TYPE_STRING));
 	}
 	else if(CFunctionMap.count(arg)){
-		Value value(arg);
-		value.setType(Value::TYPE_FUNCTION);
-		arg2=program->addValue(value);
+		arg2=program->addValue(new Value(arg,Value::TYPE_FUNCTION));
 	}
 	if(ch=='\n'||ch=='\r'||ch==ICStream::eos||ch=='"'){
 		if(optCodeMap.count(opt)){
@@ -158,29 +155,18 @@ SCIInstruction Executer::getSource()
 		}
 	}
 	arg="";
-	while(!(isalnum(ch)||ch==ICStream::eos||ch=='"')){
-		ch=stream->read();
-	}
-	while(isalnum(ch)||ch==' '||ch=='"'){
-		arg+=ch;
-		ch=stream->read();
-	}
+	ch=getInstruction(this->stream,arg);
 	if(isNumber(arg)){
-		Value value(toNumber(arg));
-		arg3=program->addValue(value);
+		arg3=program->addValue(new Value(toNumber(arg)));
 	}
 	else if(isDecimal(arg)){
-		Value value(toDecimal(arg));
-		arg3=program->addValue(value);
+		arg3=program->addValue(new Value(toDecimal(arg)));
 	}
 	else if(isString(arg)){
-		Value value(toString(arg));
-		arg3=program->addValue(value);
+		arg3=program->addValue(new Value(toString(arg),Value::TYPE_STRING));
 	}
 	else if(CFunctionMap.count(arg)){
-		Value value(arg);
-		value.setType(Value::TYPE_FUNCTION);
-		arg3=program->addValue(value);
+		arg3=program->addValue(new Value(arg,Value::TYPE_FUNCTION));
 	}
 	if(ch=='\n'||ch=='\r'||ch==ICStream::eos){
 		if(optCodeMap.count(opt)){
@@ -211,30 +197,35 @@ int Executer::execute()
 		switch(ins.opt){
 			case SCIInstruction::EXIT:
 			{
-				Value vexit=program->get(ins.arg1);
+				int state=program->get(ins.arg1)->getNumber();
 				program->pop();
-				return vexit.getNumber();
+				return state;
 			}
-			case SCIInstruction::PUSH:
+			/*case SCIInstruction::PUSH:
 			{
 				Value vpush=program->get(ins.arg1);
-				cout<<ins.arg1;
+				cout<<vpush.getNumber();
 				program->pop();
 				program->addValue(vpush);
 				break;
 			}
 			case SCIInstruction::CALL:
 			{
-				if(CFunctionMap.count(program->get(ins.arg1).getFunction())){
-					string fun=program->get(ins.arg1).getFunction();
-					program->pop();
-					CFunctionMap[fun](program);
+				Value v=program->get(ins.arg1);
+				if(v.getType()!=Value::TYPE_FUNCTION){
+					string e="错误的类型!值类型应为Function,但类型为"+Value::toString(v.getType());
+					error(e);
+					return -1; 
+				} 
+				if(CFunctionMap.count(v.getFunction())){
+					program->pop(); 
+					CFunctionMap[v.getFunction()](program);
 				}
 				else{
 					//TODO:添加自定义函数 
 				}
 				break;
-			}
+			}*/
 		}
 	}
 }

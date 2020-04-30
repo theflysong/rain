@@ -4,7 +4,7 @@
 #include "CFBasicIO.h"
 #include "Main.h"
 
-typedef Value(*CFunction)(Program*);
+typedef Value*(*CFunction)(Program*);
 
 extern map<std::string,CFunction> CFunctionMap; 
 

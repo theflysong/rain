@@ -3,25 +3,24 @@
 /*
 	获得第i个元素 
 */
-Value RuntimeStack::get(int index)
+Value* RuntimeStack::get(int index)
 {
-	cout<<stack[index];
 	return stack[index];
 }
 
-Value RuntimeStack::getFromTop(){
+Value* RuntimeStack::getFromTop(){
 	return stack[stack.size()-1];
 }
 
-int RuntimeStack::size()
+size_t RuntimeStack::size()
 {
-	return (int)stack.size(); 
+	return stack.size(); 
 }
 
 /*
 	压入一个元素 
 */
-void RuntimeStack::push(Value value)
+void RuntimeStack::push(Value* value)
 {
 	stack.push_back(value);
 }

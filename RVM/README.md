@@ -4,8 +4,10 @@
 
 A Virtual Machine for Rain
 
-Use Stack Instruction to work
+Use 3-address instruction to work
 
 ## zh_CN
+
+RainÓïÑÔµÄĞéÄâ»ú
 
 
