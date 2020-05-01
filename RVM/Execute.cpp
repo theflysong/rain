@@ -23,6 +23,11 @@ Executer::Executer(ICStream* stream)
 inline bool isNumber(string str)
 {
 	for(int i=0;i<str.length();i++){
+		if(str[i]=='-'||str[i]=='+'){
+			if(i==0)
+				continue;
+			return false;
+		}
 		if(!isdigit(str[i]))
 			return false;
 	}
@@ -38,6 +43,11 @@ inline bool isDecimal(string str)
 {
 	bool b=false;
 	for(int i=0;i<str.length();i++){
+		if(str[i]=='-'||str[i]=='+'){
+			if(i==0)
+				continue;
+			return false;
+		}
 		if(!(isdigit(str[i])||str[i]=='.'))
 			return false;
 		if(str[i]=='.')
@@ -72,7 +82,7 @@ inline string toString(string str)
 
 inline char getArgs(ICStream* stream,string &str){
 	char ch=stream->read();
-	while(!(isalnum(ch)||ch==ICStream::eos||ch=='"')){
+	while(!(isalnum(ch)||ch==ICStream::eos||ch=='"'||ch=='-'||ch=='+')){
 		ch=stream->read();
 	}
 	if(ch=='"'){
@@ -91,7 +101,7 @@ inline char getArgs(ICStream* stream,string &str){
 		}
 		return ch;
 	} 
-	while(isalnum(ch)||ch==' '||ch=='.'){
+	while(isalnum(ch)||ch==' '||ch=='.'||ch=='-'||ch=='+'){
 		str+=ch;
 		ch=stream->read();
 	}

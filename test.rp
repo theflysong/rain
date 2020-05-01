@@ -4,4 +4,4 @@ push 2
 call print
 push 2000
 call sleep
-exit 0
+exit -1
