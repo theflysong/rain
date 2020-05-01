@@ -120,6 +120,25 @@ inline char getOpt(ICStream* stream,string &str){
 	return ch;
 }
 
+inline char LexerCode(ICStream* stream,int &arg1){
+	string arg="";
+	char ch=getArgs(stream,arg);
+	if(isNumber(arg)){
+		arg1=program->addValue(new Value(toNumber(arg)));
+	}
+	else if(isDecimal(arg)){
+		arg1=program->addValue(new Value(toDecimal(arg)));
+	}
+	else if(isString(arg)){
+		arg1=program->addValue(new Value(toString(arg),Value::TYPE_STRING));
+	}
+	else if(CFunctionMap.count(arg)){
+		arg1=program->addValue(new Value(arg,Value::TYPE_FUNCTION));
+	}
+	return ch;
+}
+
+
 SCIInstruction Executer::getSource()
 {
 	string opt="";
@@ -137,20 +156,7 @@ SCIInstruction Executer::getSource()
 			exit(-1);
 		}
 	}
-	arg="";
-	ch=getArgs(this->stream,arg);
-	if(isNumber(arg)){
-		arg1=program->addValue(new Value(toNumber(arg)));
-	}
-	else if(isDecimal(arg)){
-		arg1=program->addValue(new Value(toDecimal(arg)));
-	}
-	else if(isString(arg)){
-		arg1=program->addValue(new Value(toString(arg),Value::TYPE_STRING));
-	}
-	else if(CFunctionMap.count(arg)){
-		arg1=program->addValue(new Value(arg,Value::TYPE_FUNCTION));
-	}
+	ch = LexerCode(this->stream,arg1);
 	if(ch=='\n'||ch=='\r'||ch==ICStream::eos||ch=='"'){
 		if(optCodeMap.count(opt)){
 			SCIInstruction ins(optCodeMap[opt],arg1,-1,-1);
@@ -162,20 +168,7 @@ SCIInstruction Executer::getSource()
 			exit(-1);
 		}
 	}
-	arg="";
-	ch=getArgs(this->stream,arg);
-	if(isNumber(arg)){
-		arg2=program->addValue(new Value(toNumber(arg)));
-	}
-	else if(isDecimal(arg)){
-		arg2=program->addValue(new Value(toDecimal(arg)));
-	}
-	else if(isString(arg)){
-		arg2=program->addValue(new Value(toString(arg),Value::TYPE_STRING));
-	}
-	else if(CFunctionMap.count(arg)){
-		arg2=program->addValue(new Value(arg,Value::TYPE_FUNCTION));
-	}
+	ch = LexerCode(this->stream,arg1);
 	if(ch=='\n'||ch=='\r'||ch==ICStream::eos||ch=='"'){
 		if(optCodeMap.count(opt)){
 			SCIInstruction ins(optCodeMap[opt],arg1,arg2,-1);
@@ -187,20 +180,7 @@ SCIInstruction Executer::getSource()
 			exit(-1);
 		}
 	}
-	arg="";
-	ch=getArgs(this->stream,arg);
-	if(isNumber(arg)){
-		arg3=program->addValue(new Value(toNumber(arg)));
-	}
-	else if(isDecimal(arg)){
-		arg3=program->addValue(new Value(toDecimal(arg)));
-	}
-	else if(isString(arg)){
-		arg3=program->addValue(new Value(toString(arg),Value::TYPE_STRING));
-	}
-	else if(CFunctionMap.count(arg)){
-		arg3=program->addValue(new Value(arg,Value::TYPE_FUNCTION));
-	}
+	ch = LexerCode(this->stream,arg1);
 	if(ch=='\n'||ch=='\r'||ch==ICStream::eos){
 		if(optCodeMap.count(opt)){
 			SCIInstruction ins(optCodeMap[opt],arg1,arg2,arg3);
@@ -249,7 +229,9 @@ int Executer::execute()
 				if(CFunctionMap.count(v->getFunction())){
 					string str=v->getFunction();
 					program->remove(ins.arg1);
-					CFunctionMap[str](program);
+					Value* value = CFunctionMap[str](program);
+					if(value!=NULL)
+						program->addValue(value);
 					break;
 				}
 				else{

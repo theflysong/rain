@@ -3,6 +3,7 @@
 
 #include "CFBasicIO.h"
 #include "CFBasicSystem.h"
+#include "CFBasicMath.h"
 #include "Main.h"
 
 typedef Value*(*CFunction)(Program*);

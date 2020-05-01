@@ -1,0 +1,16 @@
+add:
+  Variable: false
+  CondtionJudge: false
+  Loop: false
+  MoreCFunction:
+    print: true
+    rand: false
+    floor: false
+    cell: false
+    round: false
+    max: false
+    min: false
+  MoreSystemFunction:
+    sleep: true
+    cls: false
+fix:
