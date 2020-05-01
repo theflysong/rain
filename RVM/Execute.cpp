@@ -17,6 +17,7 @@ Executer::Executer(ICStream* stream)
 	
 	/*CFunction*/
 	CFunctionMap["print"]=print; 
+	CFunctionMap["sleep"]=sleep;
 }
 
 inline bool isNumber(string str)
@@ -35,9 +36,15 @@ inline int toNumber(string str)
 
 inline bool isDecimal(string str)
 {
+	bool b=false;
 	for(int i=0;i<str.length();i++){
 		if(!(isdigit(str[i])||str[i]=='.'))
 			return false;
+		if(str[i]=='.')
+			if(b)
+				return false;
+			else
+				b=true;
 	}
 	return true;
 }
@@ -84,7 +91,7 @@ inline char getArgs(ICStream* stream,string &str){
 		}
 		return ch;
 	} 
-	while(isalnum(ch)||ch==' '){
+	while(isalnum(ch)||ch==' '||ch=='.'){
 		str+=ch;
 		ch=stream->read();
 	}
