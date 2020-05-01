@@ -50,6 +50,6 @@ int main()
 	Executer exe(file);
 	int re = exe.execute();
 	delete program;
-	//delete file;
+	delete file;
 	return re;
 }
