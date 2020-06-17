@@ -6,4 +6,3 @@
 Value* print(Program* program);
 
 #endif 
-//E:\language\rain\test.rp

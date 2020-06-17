@@ -15,15 +15,22 @@ class Program
 {
 private:
 	RuntimeStack ValueStack;
-	//map<string,int> map; 
+	map<string,Value*> VariableMap; 
 public:
 	Program();
+	map<string,Value::VTYPE> typeMap; 
 	Value* get(int index);
 	Value* getFromTop();
 	void pop();
 	void remove(int index);
 	int addValue(Value* value);
 	size_t size();
+	void addVariable(string name,string TYPE);
+	void setVariable(string name,Value* pointer);
+	Value* getVariable(string name);
+	bool hasVariable(string name);
+	void removeVariable(string name);
+	void exit();
 };
 
 extern Program* program;

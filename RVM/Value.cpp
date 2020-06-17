@@ -42,6 +42,23 @@ Value::Value(double decimal) : type(TYPE_DECIMAL)
 	this->decimal = new double(decimal);
 }
 
+Value::Value(VTYPE type)
+{
+	this->type=type;
+	switch(type){
+		case TYPE_NUMBER:
+			this->number=new int;break;
+		case TYPE_DECIMAL:
+			this->decimal=new double;break;
+		case TYPE_STRING:
+            this->str = new string;break;
+	}
+} 
+
+Value::Value(VTYPE clazz,string name){
+	this->clazz = new VTYPE(clazz);
+}
+
 /*
 	对值操作 
 */
@@ -80,7 +97,7 @@ string Value::getID()
 	return *(this->ID);
 }
 
-void Value::setID(int ID)
+void Value::setID(string ID)
 {
 	*(this->ID)=ID;
 }
@@ -95,6 +112,16 @@ void Value::setFunction(string function)
 	*(this->FunctionName)=function;
 }
 
+Value::VTYPE Value::getClass()
+{
+	return *(this->clazz);
+}
+
+void Value::setClass(VTYPE clazz)
+{
+	*(this->clazz)=clazz;
+}
+
 /*
 	获得Value类型 
 */
@@ -107,6 +134,11 @@ void Value::setType(Value::VTYPE type)
 {
 	this->type=type;
 }
+
+void* Value::getPtr()
+{
+	return this->ptr; 
+} 
 
 /*
 	析构函数

@@ -36,6 +36,55 @@ Program::Program()
 	
 }
 
+/*
+	-1ΪNULL
+*/
+void Program::addVariable(string name,string type)
+{
+	this->VariableMap[name]=(Value*)NULL;
+}
+
+void Program::setVariable(string name,Value* pointer)
+{
+	if(hasVariable(name)){
+		this->VariableMap[name]=pointer;
+	}
+}
+
+void Program::removeVariable(string name)
+{
+	if(hasVariable(name))
+	{
+		delete getVariable(name);
+		VariableMap.erase(name);
+	}
+}
+
+void Program::exit(){
+	while(this->size()==0){
+		this->pop();
+	}
+	map<string,Value*>::iterator it = VariableMap.begin();
+	while(it!=VariableMap.end()){
+		delete it->second;
+		it++;
+	}
+}
+
+bool Program::hasVariable(string name)
+{
+	return VariableMap.find(name)!=VariableMap.end(); 
+} 
+
+Value* Program::getVariable(string name)
+{
+	if(hasVariable(name))
+	{
+		return VariableMap[name];
+	}
+	return (Value*)NULL;
+}
+
 Program* program;
 
 /*

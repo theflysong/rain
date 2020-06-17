@@ -8,16 +8,25 @@ Value* RuntimeStack::get(int index)
 	return stack[index];
 }
 
+/*
+	获得栈顶元素 
+*/
 Value* RuntimeStack::getFromTop()
 {
 	return stack[stack.size()-1];
 }
 
+/*
+	移除第index个元素(设为NULL待用或减少stack长度) 
+*/
 void RuntimeStack::remove(int index)
 {
 	this->stack[index]=NULL;
-	if(index==stack.size()-1){
+	while(stack[stack.size()-1]==NULL){
 		stack.pop_back();
+		if(stack.size()==0){
+			break;
+		}
 	}
 }
 
@@ -33,8 +42,9 @@ int RuntimeStack::push(Value* value)
 {
 	vector<Value*>::iterator it=find(stack.begin(),stack.end(),(Value*)NULL);
 	if(it!=stack.end()){
+		int ptr=distance(stack.begin(),it);
 		stack.insert(it,value);
-		return distance(stack.begin(),it);
+		return ptr;
 	}
 	stack.push_back(value);
 	return stack.size()-1;

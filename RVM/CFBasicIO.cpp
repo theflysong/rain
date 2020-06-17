@@ -16,6 +16,19 @@ Value* print(Program* program)
 		case Value::TYPE_DECIMAL:
 			cout<<v->getDecimal();
 			break;
+		case Value::TYPE_ID:
+			Value* v1 = program->getVariable(v->getID());
+			switch(v1->getType()){
+			case Value::TYPE_STRING:
+				cout<<v1->getStr();
+				break;
+			case Value::TYPE_NUMBER:
+				cout<<v1->getNumber();
+				break;
+			case Value::TYPE_DECIMAL:
+				cout<<v1->getDecimal();
+				break;
+			}
 		}
 		program->pop();
 	}

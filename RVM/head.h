@@ -106,4 +106,64 @@ public:
     TooBigNumException(int num);
 };
 
+inline bool isNumber(string str)
+{
+	for(int i=0;i<str.length();i++){
+		if(str[i]=='-'||str[i]=='+'){
+			if(i==0)
+				continue;
+			return false;
+		}
+		if(!isdigit(str[i]))
+			return false;
+	}
+	return true;
+}
+
+inline int toNumber(string str)
+{
+	return atoi(str.c_str());
+}
+
+inline bool isDecimal(string str)
+{
+	bool b=false;
+	for(int i=0;i<str.length();i++){
+		if(str[i]=='-'||str[i]=='+'){
+			if(i==0)
+				continue;
+			return false;
+		}
+		if(!(isdigit(str[i])||str[i]=='.'))
+			return false;
+		if(str[i]=='.')
+			if(b)
+				return false;
+			else
+				b=true;
+	}
+	return true;
+}
+
+inline double toDecimal(string str)
+{
+	return atof(str.c_str());
+}
+
+inline bool isString(string str)
+{
+	return str[0]=='"'&&str[str.length()-1]=='"';
+}
+
+inline string toString(string str)
+{
+	string s="";
+	for(int i=1;i<str.length()-1;i++)
+	{
+		s+=str[i];
+	}
+	escape(s);
+	return s;
+}
+
 #endif

@@ -1,6 +1,10 @@
+def Q
+new Q,number
+set Q,20
+push Q
 push 2.33
 push "Hello,World!I'm "
-push 2
+push 3
 call print
 push 2000
 call sleep

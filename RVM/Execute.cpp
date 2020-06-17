@@ -14,70 +14,28 @@ Executer::Executer(ICStream* stream)
 	optCodeMap["jmp"]=SCIInstruction::JMP;
 	optCodeMap["call"]=SCIInstruction::CALL;
 	optCodeMap["mov"]=SCIInstruction::MOV;
+	optCodeMap["new"]=SCIInstruction::NEW;
+	optCodeMap["del"]=SCIInstruction::DEL;
+	optCodeMap["jpt"]=SCIInstruction::JPT;
+	optCodeMap["jpf"]=SCIInstruction::JPF;
+	optCodeMap["cmp"]=SCIInstruction::CMP;
+	optCodeMap["add"]=SCIInstruction::ADD; 
+	optCodeMap["sub"]=SCIInstruction::SUB;
+	optCodeMap["mul"]=SCIInstruction::MUL;
+	optCodeMap["dev"]=SCIInstruction::DEV;
+	optCodeMap["mod"]=SCIInstruction::MOD; 
+	optCodeMap["inc"]=SCIInstruction::INC; 
+	optCodeMap["dec"]=SCIInstruction::DEC; 
+	optCodeMap["set"]=SCIInstruction::SET;
 	
 	/*CFunction*/
 	CFunctionMap["print"]=print; 
 	CFunctionMap["sleep"]=sleep;
-}
-
-inline bool isNumber(string str)
-{
-	for(int i=0;i<str.length();i++){
-		if(str[i]=='-'||str[i]=='+'){
-			if(i==0)
-				continue;
-			return false;
-		}
-		if(!isdigit(str[i]))
-			return false;
-	}
-	return true;
-}
-
-inline int toNumber(string str)
-{
-	return atoi(str.c_str());
-}
-
-inline bool isDecimal(string str)
-{
-	bool b=false;
-	for(int i=0;i<str.length();i++){
-		if(str[i]=='-'||str[i]=='+'){
-			if(i==0)
-				continue;
-			return false;
-		}
-		if(!(isdigit(str[i])||str[i]=='.'))
-			return false;
-		if(str[i]=='.')
-			if(b)
-				return false;
-			else
-				b=true;
-	}
-	return true;
-}
-
-inline double toDecimal(string str)
-{
-	return atof(str.c_str());
-}
-
-inline bool isString(string str)
-{
-	return str[0]=='"'&&str[str.length()-1]=='"';
-}
-
-inline string toString(string str)
-{
-	string s="";
-	for(int i=1;i<str.length()-1;i++)
-	{
-		s+=str[i];
-	}
-	escape(s);
-	return s;
+	
+	/*TYPES*/
+	program->typeMap["number"]=Value::TYPE_NUMBER;
+	program->typeMap["string"]=Value::TYPE_STRING;
+	program->typeMap["decimal"]=Value::TYPE_DECIMAL;
 }
 
 inline char getArgs(ICStream* stream,string &str){
@@ -135,9 +93,20 @@ inline char LexerCode(ICStream* stream,int &arg1){
 	else if(CFunctionMap.count(arg)){
 		arg1=program->addValue(new Value(arg,Value::TYPE_FUNCTION));
 	}
+	else if(program->hasVariable(arg)){
+		arg1=program->addValue(new Value(arg,Value::TYPE_ID));
+	}
+	else if(program->typeMap.count(arg)){
+		arg1=program->addValue(new Value(program->typeMap[arg],arg));
+	} 
 	return ch;
 }
 
+int LexerDef(ICStream* stream){
+	string arg="";
+	char ch=getArgs(stream,arg);
+	return program->addValue(new Value(arg,Value::TYPE_ID));
+}
 
 SCIInstruction Executer::getSource()
 {
@@ -145,6 +114,11 @@ SCIInstruction Executer::getSource()
 	int arg1,arg2,arg3;
 	string arg="";
 	char ch=getOpt(this->stream,opt);
+	if(opt=="def"){
+		arg1=LexerDef(this->stream);
+		SCIInstruction ins(SCIInstruction::DEF,arg1,-1,-1);
+		return ins;
+	}
 	if(ch=='\n'||ch=='\r'||ch==ICStream::eos){
 		if(optCodeMap.count(opt)){
 			SCIInstruction ins(optCodeMap[opt],-1,-1,-1);
@@ -157,7 +131,7 @@ SCIInstruction Executer::getSource()
 		}
 	}
 	ch = LexerCode(this->stream,arg1);
-	if(ch=='\n'||ch=='\r'||ch==ICStream::eos||ch=='"'){
+	if(ch=='\n'||ch=='\r'||ch==ICStream::eos){
 		if(optCodeMap.count(opt)){
 			SCIInstruction ins(optCodeMap[opt],arg1,-1,-1);
 			return ins;
@@ -168,8 +142,8 @@ SCIInstruction Executer::getSource()
 			exit(-1);
 		}
 	}
-	ch = LexerCode(this->stream,arg1);
-	if(ch=='\n'||ch=='\r'||ch==ICStream::eos||ch=='"'){
+	ch = LexerCode(this->stream,arg2);
+	if(ch=='\n'||ch=='\r'||ch==ICStream::eos){
 		if(optCodeMap.count(opt)){
 			SCIInstruction ins(optCodeMap[opt],arg1,arg2,-1);
 			return ins;
@@ -180,7 +154,7 @@ SCIInstruction Executer::getSource()
 			exit(-1);
 		}
 	}
-	ch = LexerCode(this->stream,arg1);
+	ch = LexerCode(this->stream,arg3);
 	if(ch=='\n'||ch=='\r'||ch==ICStream::eos){
 		if(optCodeMap.count(opt)){
 			SCIInstruction ins(optCodeMap[opt],arg1,arg2,arg3);
@@ -238,6 +212,52 @@ int Executer::execute()
 					//TODO:添加自定义函数 
 				}
 				program->remove(ins.arg1);
+				break;
+			}
+			case SCIInstruction::NEW:
+			{
+				string name = program->get(ins.arg1)->getID();
+				program->remove(ins.arg1);
+				if(!program->hasVariable(name)){
+					error("没有变量"<<name);
+					ErrorExit();
+				}
+				program->setVariable(name,new Value(program->get(ins.arg2)->getClass()));
+				break;			
+			}
+			case SCIInstruction::DEF:
+			{
+				string name = program->get(ins.arg1)->getID();
+				program->remove(ins.arg1);
+				program->addVariable(name,"");
+				break;
+			}
+			case SCIInstruction::SET:
+			{
+				Value* v1 = program->get(ins.arg2);
+				if(v1->getType()==Value::TYPE_ID){
+					v1=program->getVariable(v1->getID());
+				}
+				string ID = program->get(ins.arg1)->getID();
+				program->remove(ins.arg1);
+				
+				if(!program->hasVariable(ID)){
+					error("没有变量"<<ID);
+					ErrorExit();
+				}
+				Value* v2 = program->getVariable(ID);
+				if(v2==(Value*)NULL){
+					error("Null!");
+				}
+				switch(v1->getType()){
+					case Value::TYPE_ID: v2->setID(v1->getID());break;
+					case Value::TYPE_FUNCTION: v2->setFunction(v1->getFunction());break;
+					case Value::TYPE_NUMBER: v2->setNumber(v1->getNumber());break;
+					case Value::TYPE_DECIMAL: v2->setDecimal(v1->getDecimal());break;
+					case Value::TYPE_STRING: v2->setStr(v1->getStr());break;
+					default: break;
+				}
+				program->remove(ins.arg2);
 				break;
 			}
 		}
