@@ -3,3 +3,16 @@
 *.layout
 *.gch
 *.win
+*.sln
+*.obj
+*.tlog
+*.sdf
+*.vcxproj
+*.pdb
+*.ilk
+*.filters
+*.user
+*.lastbuildstate
+*.idb
+*.log
+*.suo
