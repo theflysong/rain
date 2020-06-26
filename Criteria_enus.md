@@ -57,4 +57,6 @@ List names use imperative sentences and do not end with periods
 
 72 words per line
 
+## Code Criteria
+
 You can use the gcc compiler to compile this version of code
