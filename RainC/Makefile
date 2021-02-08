@@ -1,0 +1,4 @@
+C_OBJ = main.o
+LD = ld
+LD_FLAGS_RELEASE = 
+LD_FLAGS_DEBUG = 
