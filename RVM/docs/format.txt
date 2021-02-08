@@ -1,0 +1,36 @@
+RVM可执行文件格式 .rc
+常量池
+成员声明
+代码段
+
+常量池
+格式：
+常量数量M 2B
+常量1长度N 2B 常量1内容(N Byte)
+常量2长度N 2B 常量2内容(N Byte)
+常量3长度N 2B 常量3内容(N Byte)
+常量M长度N 2B 常量M内容(N Byte)
+
+ps:中括号代码如果括号内内容成立为1,否则为0
+
+成员声明分为属性声明，成员类声明与方法声明
+属性声明：访问权限 [static] [const] 属性名(常量池编号)
+成员类声明: 访问权限 [static] [final] 成员类名(常量池编号) [父类1(常量池编号), 父类2(常量池编号)...结束(0xFFFF)]
+方法声明: 访问权限 [static] [final] 函数名(常量池编号) 参数数量 函数开头处于代码段的第几条指令
+访问权限：public(0) protected(1) package(2) private(3)
+访问权限：2bit static: 1bit const/final: 1bit 常量池编号2B 参数数量 1B
+访问权限、static、const/final共1B
+分布:
+                             Byte 1                                                       
+  bit8    bit7    bit6    bit5    bit4    bit3    bit2    bit1      
+                              const/final static    访问权限
+举个例子，设属性A名字在常量池的第0x0010项, protected static
+那么这个声明看上去会像这样:
+BIN:00000110 00000000 00010000
+HEX:0x06 0x00 0x10
+
+如：
+0x0C "Hello,World!"
+
+代码段：
+RT，代码
