@@ -1,0 +1,9 @@
+# A+B
+main(2):
+    call input(0)
+    call input(0)
+    add
+    push "%d\n"
+    push 2
+    call print(-1)
+    ret

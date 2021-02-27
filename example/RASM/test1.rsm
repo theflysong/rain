@@ -1,0 +1,6 @@
+# Hello, World!
+main(2):
+    push "Hello, World!"
+    push 1
+    call printf(-1)
+    ret
