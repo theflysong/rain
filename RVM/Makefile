@@ -1,4 +1,4 @@
-OBJ := main.o reader/reader.o
+OBJ := main.o reader/reader.o executer/class/class.o utils/bytehelper.o
 LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=
