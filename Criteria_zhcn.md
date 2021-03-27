@@ -1,60 +1,60 @@
-# �ύ׼��
+# 提交准则
 
-## Git Commit�ύ׼��
+## Git Commit提交准则：
 
-Add: ������ʲô����
+Add: 添加了什么东西
 
-Delete: ɾ����ʲô����
+Delete: 删除了什么东西
 
-Fix: �޸���ʲô����
+Fix: 修复了什么东西
 
-Update: ������ʲô���� 
+Update: 更新了什么东西 
 
-Refact: �ع���ʲô����
+Refact: 重构了什么东西
 
-Rename:��������ʲô����
+Rename:重命名了什么东西
 
-Wish:�ƻ���ʲô����
+Wish:计划做什么东西
 
-Doing:������ʲô����
+Doing:正在做什么东西
 
-List:���������޸ġ����ֲ�Σ������г��޸��б�
+List:用于套娃修改、划分层次，底下列出修改列表
 
-Task:����ĳ������ȴ������
+Task:添加某个任务等待人完成
 
-Issues:�������
+Issues:请求帮助
 
-Change:�޸���ʲô����
+Change:修改了什么东西
 
-Build:�������°汾
+Build:构建了新版本
 
-Modify:�޸���ʲô
+Modify:修改了什么
 
-Complete:�����ʲô
+Complete:完成了什么
 
-Found:�ҵ���ʲô��©����
+Found:找到了什么（漏洞）
 
-## Listʾ��
+## List示例
 ```
 List xxx:
   Fix xxx
 ```
 
-## List��������
-"api_"��ͷָ��api����
+## List命名建议
+"api_"开头指代api更新
 
-"function_"��ͷָ�����ܸ���
+"function_"开头指代功能更新
 
-"code_"��ͷָ���������
+"code_"开头指代代码更新
 
-"optimize_"��ͷָ�������Ż�
+"optimize_"开头指代性能优化
 
-List����������ĸҪ��д����50����ĸ����
+List行命名首字母要大写且在50个字母以内
 
-���þ�Ž���List����ʹ����ʹ��
+不用句号结束List行且使用祈使句
 
-ÿ��72����
+每行72个字
 
-## ����׼��
+## 代码准则
 
-����ʹ��gcc����������˰汾�Ĵ���
+可以使用gcc编译器编译此版本的代码

@@ -17,4 +17,10 @@
 *.log
 *.suo
 *.stackdump
+*.exe
 .vscode/
+configer
+rain
+rainc
+rasm
+bytecodewriter

@@ -8,6 +8,6 @@ class Executer;
 
 typedef void(*ins_handle)(Executer*);
 
-std::map<byte, ins_handle> ins_map;
+//std::map<byte, ins_handle> ins_map;
 
 #endif

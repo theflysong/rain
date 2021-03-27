@@ -8,4 +8,8 @@
 #define isEOR(eor) (!(~eor))
 typedef char byte;
 
+#define P_PRIVATE 0
+#define P_PROTECTED 1
+#define P_PUBLIC 2
+
 #endif

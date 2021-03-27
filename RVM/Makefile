@@ -1,4 +1,4 @@
-OBJ := main.o reader/reader.o executer/class/class.o utils/bytehelper.o
+OBJ := main.o reader/reader.o executer/class.o executer/value.o utils/bytehelper.o utils/tostringhelper.o
 LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=
@@ -8,8 +8,12 @@ GPP_FLAGS_DEBUG := -std=c++11
 OUTPUT := rain
 CONFIGER := ../configer/configer
 
-$(OUTPUT): $(OBJ)
-	$(GPP) $(GPP_FLAGS_DEBUG) -o $@ $^
+%.o : %.cpp
+	$(CONFIGER) -f ../configer/configer.config -e debug true $(GPP) $(GPP_FLAGS_DEBUG) -c -o $@ $^ $$ $(GPP) $(GPP_FLAGS_RELEASE) -c -o $@ $^ $$
 
-%.o : %.c
-	$(GPP) $(GPP_FLAGS_DEBUG) -c  -o $@ $^
+$(OUTPUT): $(OBJ)
+	$(CONFIGER) -f ../configer/configer.config -e debug true $(GPP) $(GPP_FLAGS_DEBUG) -o $@ $^ $$ $(GPP) $(GPP_FLAGS_RELEASE) -o $@ $^ $$
+
+.PHONY: clean
+clean:
+	$(RM) $(OBJ)

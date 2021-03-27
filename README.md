@@ -7,14 +7,14 @@ A new programming language
 If you want to contribute to this project,please check the [pull requests criteria](Criteria_enus.md)
 
 
-## ¼òÌåÖĞÎÄ
+## ç®€ä½“ä¸­æ–‡
 
-Ò»¸öĞÂµÄ±à³ÌÓïÑÔ
+ä¸€ä¸ªæ–°çš„ç¼–ç¨‹è¯­è¨€
 
-Èç¹ûÄãÏëÎªÕâ¸ö³öÒ»·İÁ¦£¬Çë²é¿´[Ìá½»×¼Ôò](Criteria_zhcn.md)
+å¦‚æœä½ æƒ³ä¸ºè¿™ä¸ªå‡ºä¸€ä»½åŠ›ï¼Œè¯·æŸ¥çœ‹[æäº¤å‡†åˆ™](Criteria_zhcn.md)
 
-## ·±ówÖĞÎÄ
+## ç¹é«”ä¸­æ–‡
 
-Ò»‚€ĞÂµÄ³ÌÊ½ÔOÓ‹ÕZÑÔ
+ä¸€å€‹æ–°çš„ç¨‹å¼è¨­è¨ˆèªè¨€
 
-Èç¹ûÄãÏëéß@‚€³öÒ»·İÁ¦£¬Õˆ²é¿´[Ìá½»œÊ„t](Criteria_zhtw.md)
+å¦‚æœä½ æƒ³ç‚ºé€™å€‹å‡ºä¸€ä»½åŠ›ï¼Œè«‹æŸ¥çœ‹[æäº¤æº–å‰‡](Criteria_zhtw.md)

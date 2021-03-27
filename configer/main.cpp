@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
         else if (switcher == "-c") {
             string key = argv [++ i], value = argv [++ i];
             config[key] = value;
+            save(name.c_str());
         }
         else if (switcher == "-e") {
             string key = argv [++ i], value = argv [++ i], command1 = "", command2 = "";
@@ -72,6 +73,5 @@ int main(int argc, char** argv) {
             }
         }
     }
-    save(name.c_str());
     return 0;
 }

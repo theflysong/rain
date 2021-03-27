@@ -1,59 +1,59 @@
-#�ύ�ʄt
+# 提交準則
 
-## Git Commit�ύ�ʄt��
+## Git Commit提交準則：
 
-Add:������ʲ�N�|��
+Add:添加了什麼東西
 
-Delete:ɾ����ʲ�N�|��
+Delete:删除了什麼東西
 
-Fix:�ޏ���ʲ�N�|��
+Fix:修復了什麼東西
 
-Update:������ʲ�N�|��
+Update:更新了什麼東西
 
-Refact:�ؘ���ʲ�N�|��
+Refact:重構了什麼東西
 
-Rename:��������ʲ�N�|��
+Rename:重命名了什麼東西
 
-Wish:Ӌ����ʲ�N�|��
+Wish:計畫做什麼東西
 
-Doing:������ʲ�N�|��
+Doing:正在做什麼東西
 
-List:��������޸ġ����֌ӴΣ������г��޸����
+List:用於套娃修改、劃分層次，底下列出修改清單
 
-Task:����ĳ���΄յȴ������
+Task:添加某個任務等待人完成
 
-Issues:Ո�����
+Issues:請求幫助
 
-Change:�޸���ʲ�N�|��
+Change:修改了什麼東西
 
-Build:�������°汾
+Build:構建了新版本
 
-Modify:�޸���ʲ�N
+Modify:修改了什麼
 
-Complete:�����ʲ�N
+Complete:完成了什麼
 
-Found:�ҵ���ʲ�N��©����
+Found:找到了什麼（漏洞）
 
-## Listʾ��
+## List示例
 ```
 List xxx:
   Fix xxx
 ```
-## List�������h
-��api_���_�^ָ��api����
+## List命名建議
+“api_“開頭指代api更新
 
-��function_���_�^ָ�����ܸ���
+“function_“開頭指代功能更新
 
-��code_���_�^ָ����ʽ�a����
+“code_“開頭指代程式碼更新
 
-��optimize_���_�^ָ�����܃���
+“optimize_“開頭指代性能優化
 
-List����������ĸҪ������50����ĸ�ԃ�
+List行命名首字母要大寫且在50個字母以內
 
-���þ�̖�Y��List����ʹ����ʹ��
+不用句號結束List行且使用祈使句
 
-ÿ��72����
+每行72個字
 
-## ��ʽ�a�ʄt
+## 程式碼準則
 
-����ʹ��gcc���g�����g�˰汾�ĳ�ʽ�a
+可以使用gcc編譯器編譯此版本的程式碼
