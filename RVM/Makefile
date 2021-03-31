@@ -1,4 +1,4 @@
-OBJ := main.o reader/reader.o executer/class.o executer/value.o utils/bytehelper.o utils/tostringhelper.o
+OBJ := main.o reader/reader.o executer/class.o executer/value.o executer/instruction.o utils/bytehelper.o utils/tostringhelper.o
 LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=
