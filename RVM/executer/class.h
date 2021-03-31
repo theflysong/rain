@@ -22,6 +22,7 @@ public:
     std::map<std::string, Field> feild_pool;
     std::map<std::string, Method> method_pool;
     std::vector<std::string> member_classes;
+    std::vector<byte> codes;
 };
 
 namespace ClassCreator {

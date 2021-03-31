@@ -4,7 +4,9 @@
 #include <iostream>
 
 int main(int argc, char** argv) {
-    FileByteReader reader(argv[1]);
+    Executer executer;
+    Instruction ins;
+    /*FileByteReader reader(argv[1]);
     RainClass rclass = ClassCreator::createClass(reader);
     for (std::string con : rclass.const_pool) {
         std::cout << con << " ";
@@ -15,6 +17,8 @@ int main(int argc, char** argv) {
     std::cout << std::endl << (int)attr.parent_num;
     for (short pa : attr.parents) {
         std::cout << rclass.const_pool[pa] << " ";
-    }
+    }*/
+    __ins_init();
+    ins_map[0xff](&executer, ins);
     return 0;
 }

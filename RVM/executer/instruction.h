@@ -5,11 +5,18 @@
 #include <map>
 
 class Executer;
+struct Instruction;
 
-typedef void(*ins_handle)(Executer*);
+typedef void(*ins_handle)(Executer*, Instruction ins);
 
-void init();
+void __ins_init();
 
 extern std::map<byte, ins_handle> ins_map;
+
+struct Instruction {
+    ins_handle handle;
+    byte typer;
+    long op;
+};
 
 #endif
