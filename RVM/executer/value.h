@@ -46,6 +46,7 @@ public:
 struct Reference {
     std::shared_ptr<Value> ptr;
 public:
+    Reference();
     Reference(std::shared_ptr<Value> _ptr);
     std::shared_ptr<Value> getValue();
     Reference copy();

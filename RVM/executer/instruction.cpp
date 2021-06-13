@@ -4,6 +4,59 @@
 
 std::map<byte, ins_handle> ins_map;
 
+struct TyperValue {
+    Reference ref;
+    std::string con;
+    long long value;
+    bool isRef;
+    bool isCon;
+    bool isValue;
+};
+
+TyperValue makeTyper(Reference ref) {
+    TyperValue tv = {};
+    tv.ref = ref;
+    tv.isRef = true;
+    return tv;
+}
+
+TyperValue makeTyper(std::string con) {
+    TyperValue tv = {};
+    tv.con = con;
+    tv.isCon = true;
+    return tv;
+}
+
+TyperValue makeTyper(long long value) {
+    TyperValue tv = {};
+    tv.value = value;
+    tv.isValue = true;
+    return tv;
+}
+
+TyperValue makeTyper() {
+    TyperValue tv = {};
+    return tv;
+}
+
+TyperValue getByTyper(Executer *exe, byte typer, long long op) {
+    switch (typer) {
+    case 1:
+    case 2:
+        return makeTyper(exe->getContext().currentClass.const_pool[op]);
+    case 3:
+    case 4:
+        return makeTyper(exe->getContext().variablePool[op]);
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        return makeTyper(op);
+    default:
+        return makeTyper();
+    }
+}
+
 void __test_printer(Executer* exe, Instruction ins) {
     printf("Test output:%d\n", ins.op);
 }
@@ -81,6 +134,20 @@ void _shl(Executer* exe, Instruction ins) {
     exe->pushValue(Reference(std::make_shared<Value>(((int)num1.getValue()->getAsNumber()) << ((int)num2.getValue()->getAsNumber()))));
 }
 
+void _push(Executer* exe, Instruction ins) {
+    TyperValue tv = getByTyper(exe, ins.typer, ins.op);
+    if (tv.isValue)
+        exe->pushValue(Reference(std::make_shared<Value>(tv.value)));
+    if (tv.isCon)
+        exe->pushValue(Reference(std::make_shared<Value>(tv.con)));
+    if (tv.isRef)
+        exe->pushValue(tv.ref);
+}
+
+void _pop(Executer* exe, Instruction ins) {
+    exe->getContext().variablePool[ins.op] = exe->popValue();
+}
+
 void __ins_init() {
     ins_map[0x00] = _nop;
     ins_map[0x01] = _add;
@@ -90,6 +157,8 @@ void __ins_init() {
     ins_map[0x05] = _mod;
     ins_map[0x06] = _shr;
     ins_map[0x07] = _shl;
+    ins_map[0x08] = _push;
+    ins_map[0x09] = _pop;
     ins_map[0xff] = __test_printer;
 }
 

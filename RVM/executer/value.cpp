@@ -89,6 +89,9 @@ Value::~Value() {
         delete (int*)pointer;
 }
 
+Reference::Reference() {
+}
+
 Reference::Reference(std::shared_ptr<Value> _ptr) : ptr(_ptr){
 }
 
