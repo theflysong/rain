@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     executer.pushValue(Reference(std::make_shared<Value>(2)));
     executer.pushValue(Reference(std::make_shared<Value>(7)));
 
-    ins_map[0x03](&executer, Instruction());
+    ins_map[0x07](&executer, Instruction());
 
     std::cout << executer.popValue().getValue()->getAsNumber() << std::endl;
     return 0;
