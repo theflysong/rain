@@ -7,7 +7,6 @@ jobs:
     - uses: kurocha/setup-cpp@v1
     - name: Pack
       run: |
-       cd ${{ github.workspace }} && git clone https://github.com/theflysong/rain
        cd ${{ github.workspace }}/RVM/ && make
     - uses: actions/upload-artifact@v2
       with:
