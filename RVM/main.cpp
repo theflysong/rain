@@ -5,9 +5,8 @@
 
 int main(int argc, char** argv) {
     Executer executer;
-    Instruction ins;
-    /*FileByteReader reader(argv[1]);
-    RainClass rclass = ClassCreator::createClass(reader);
+    FileByteReader reader(argv[1]);
+    /*RainClass rclass = ClassCreator::createClass(reader);
     for (std::string con : rclass.const_pool) {
         std::cout << con << " ";
     }
@@ -19,6 +18,7 @@ int main(int argc, char** argv) {
         std::cout << rclass.const_pool[pa] << " ";
     }*/
     __ins_init();
-    ins_map[0xff](&executer, ins);
+    Instruction ins = genIns(reader);
+    ins.handle(&executer, ins);
     return 0;
 }

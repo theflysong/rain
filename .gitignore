@@ -18,6 +18,7 @@
 *.suo
 *.stackdump
 *.exe
+read.md
 .vscode/
 configer
 rain

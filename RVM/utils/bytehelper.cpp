@@ -5,7 +5,7 @@ short asShort(byte* bytes) {
 }
 
 short asShort(byte b1, byte b2) {
-    return (((int)b1) << 16) + (((int)b2));
+    return (((int)b1) << 8) + (((int)b2));
 }
 
 int asInt(byte* bytes) {

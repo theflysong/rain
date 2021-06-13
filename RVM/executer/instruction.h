@@ -2,6 +2,7 @@
 #define __INSTRUCTION_HEADER__
 
 #include "../const/defs.h"
+#include "../reader/reader.h"
 #include <map>
 
 class Executer;
@@ -16,7 +17,9 @@ extern std::map<byte, ins_handle> ins_map;
 struct Instruction {
     ins_handle handle;
     byte typer;
-    long op;
+    long long op;
 };
+
+Instruction genIns(IByteReader& reader);
 
 #endif

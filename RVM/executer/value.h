@@ -6,10 +6,10 @@
 #include <memory>
 #include <map>
 
-struct Refence;
+struct Reference;
 
 struct Object {
-    std::map<std::string, Refence> values;
+    std::map<std::string, Reference> values;
     std::string class_type;
     Object();
     Object(Object* obj);
@@ -18,8 +18,7 @@ struct Object {
 
 struct Value {
     enum Type {
-        INTEGER,
-        DECIMAL,
+        NUMBER,
         STRING,
         OBJECT
     };
@@ -29,7 +28,6 @@ private:
     void* pointer;
 public:
     Value();
-    Value(int value, bool is_const = false);
     Value(float value, bool is_const = false);
     Value(std::string value, bool is_const = false);
     Value(Object value, bool is_const = false);
@@ -37,22 +35,20 @@ public:
     Type getType();
     void setType(Type type);
     void* getPointer();
-    int& getAsInteger();
-    float& getAsDecimal();
+    float& getAsNumber();
     Object& getAsObject();
     std::string& getAsString();
-    void set(int value);
     void set(float value);
     void set(std::string value);
     void set(Object value);
 };
 
-struct Refence {
+struct Reference {
     std::shared_ptr<Value> ptr;
 public:
-    Refence(std::shared_ptr<Value> _ptr);
+    Reference(std::shared_ptr<Value> _ptr);
     std::shared_ptr<Value> getValue();
-    Refence copy();
+    Reference copy();
 };
 
 #endif

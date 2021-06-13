@@ -26,11 +26,7 @@ void* Value::getPointer() {
     return this->pointer;
 }
 
-int& Value::getAsInteger() {
-    return *((int*)pointer);
-}
-
-float& Value::getAsDecimal() {
+float& Value::getAsNumber() {
     return *((float*)pointer);
 }
 
@@ -42,16 +38,8 @@ Object& Value::getAsObject() {
     return *((Object*)pointer);
 }
 
-void Value::set(int value) {
-    if (this->type != INTEGER) {
-        delete (int*)pointer;
-        pointer = (void*)new int;
-    }
-    *((int*)pointer) = value;
-}
-
 void Value::set(float value) {
-    if (this->type != DECIMAL) {
+    if (this->type != NUMBER) {
         delete (float*)pointer;
         pointer = (void*)new float;
     }
@@ -78,16 +66,10 @@ Value::Value() {
     pointer = NULL;
 }
 
-Value::Value(int value, bool is_const) {
-    pointer = (void*)new int(value);
-    this->iconst = is_const;
-    this->type = INTEGER;
-}
-
 Value::Value(float value, bool is_const) {
     pointer = (void*)new float(value);
     this->iconst = is_const;
-    this->type = DECIMAL;
+    this->type = NUMBER;
 }
 
 Value::Value(std::string value, bool is_const) {
@@ -107,13 +89,13 @@ Value::~Value() {
         delete (int*)pointer;
 }
 
-Refence::Refence(std::shared_ptr<Value> _ptr) : ptr(_ptr){
+Reference::Reference(std::shared_ptr<Value> _ptr) : ptr(_ptr){
 }
 
-std::shared_ptr<Value> Refence::getValue() {
+std::shared_ptr<Value> Reference::getValue() {
     return ptr;
 }
 
-Refence Refence::copy() {
+Reference Reference::copy() {
     return *this;
 }
