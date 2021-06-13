@@ -9,3 +9,8 @@ Reference Executer::popValue() {
     this->context.runtimeStack.pop();
     return ref;
 }
+
+
+Context& Executer::getContext() {
+    return this->context;
+}

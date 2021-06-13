@@ -148,6 +148,108 @@ void _pop(Executer* exe, Instruction ins) {
     exe->getContext().variablePool[ins.op] = exe->popValue();
 }
 
+void _call(Executer* exe, Instruction ins) { //TODO
+}
+
+void _sml(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+    Reference num2 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() < num2.getValue()->getAsNumber())));
+}
+
+void _big(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+    Reference num2 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() > num2.getValue()->getAsNumber())));
+}
+
+void _equ(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+    Reference num2 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() == num2.getValue()->getAsNumber())));
+}
+
+void _seq(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+    Reference num2 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() <= num2.getValue()->getAsNumber())));
+}
+
+void _beq(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+    Reference num2 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() >= num2.getValue()->getAsNumber())));
+}
+
+void _not(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(!(bool)num1.getValue()->getAsNumber())));
+}
+
+void _neg(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(-num1.getValue()->getAsNumber())));
+}
+
+void _and(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+    Reference num2 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(((bool)num1.getValue()->getAsNumber()) & ((bool)num2.getValue()->getAsNumber()))));
+}
+
+void _or(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+    Reference num2 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(((bool)num1.getValue()->getAsNumber()) | ((bool)num2.getValue()->getAsNumber()))));
+}
+
+void _xor(Executer* exe, Instruction ins) {
+    Reference num1 = exe->popValue();
+    Reference num2 = exe->popValue();
+
+    if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        return;
+
+    exe->pushValue(Reference(std::make_shared<Value>(((bool)num1.getValue()->getAsNumber()) ^ ((bool)num2.getValue()->getAsNumber()))));
+}
+
+
 void __ins_init() {
     ins_map[0x00] = _nop;
     ins_map[0x01] = _add;
@@ -159,6 +261,17 @@ void __ins_init() {
     ins_map[0x07] = _shl;
     ins_map[0x08] = _push;
     ins_map[0x09] = _pop;
+    ins_map[0x0A] = _call;
+    ins_map[0x0B] = _sml;
+    ins_map[0x0C] = _big;
+    ins_map[0x0D] = _equ;
+    ins_map[0x0E] = _seq;
+    ins_map[0x0F] = _beq;
+    ins_map[0x10] = _not;
+    ins_map[0x12] = _neg;
+    ins_map[0x13] = _and;
+    ins_map[0x14] = _or;
+    ins_map[0x15] = _xor;
     ins_map[0xff] = __test_printer;
 }
 
