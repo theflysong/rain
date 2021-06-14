@@ -58,7 +58,7 @@ TyperValue getByTyper(Executer *exe, byte typer, long long op) {
 }
 
 void __test_printer(Executer* exe, Instruction ins) {
-    printf("Test output:%d\n", ins.op);
+    printf("Test output:%lld\n", ins.op);
 }
 
 void _nop(Executer* exe, Instruction ins) {
