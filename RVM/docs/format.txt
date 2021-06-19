@@ -3,6 +3,7 @@ RVM可执行文件格式 .rc
 自身属性
 成员声明
 代码段
+附加属性段
 
 常量池
 格式：
@@ -20,11 +21,13 @@ RVM可执行文件格式 .rc
 是否为成员类 1b
 父类数量 5b
 父类（常量池编号）NB
+附加属性个数 1B
+附加属性（常量池编号）NB
 
 成员声明分为属性声明，成员类声明与方法声明
 属性声明：访问权限 [static] [const] 属性名(常量池编号)
 成员类声明: 成员类名(常量池编号)
-方法声明: 访问权限 [final] 函数签名(常量池编号) 函数开头处于代码段的第几条指令
+方法声明: 访问权限 [final] 函数签名(常量池编号) 函数开头处于代码段的第几条指令(4B)
 
 ps:如果中括号内内容存在/成立为1,否则为0
 比如[static]代表为static成员为1，否则为0
@@ -39,7 +42,7 @@ ps:如果中括号内内容存在/成立为1,否则为0
 成员类声明
 
 访问权限：public(0) friendly(1) protected(2) private(3)
-访问权限：2bit static: 1bit const/final: 1bit 常量池编号2B 参数数量 1B
+访问权限：2bit static: 1bit const/final: 1bit 常量池编号2B
 访问权限、static、const/final共1B
 分布:
                              Byte 1
@@ -111,4 +114,9 @@ int add(int a, int b, Rain.Language.Utils.List list)
 add(I;I;Rain.Language.Utils.List;)I
 
 参数从左到右入栈
+
+附加属性段：
+对于部分有附加属性的成员
+格式：
+成员名（常量池编号）2B 属性个数(1B) 附加属性(NB)
 to be continue

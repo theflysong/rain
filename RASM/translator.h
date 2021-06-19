@@ -1,9 +1,17 @@
 #ifndef __TRANSLATOR__
 #define __TRANSLATOR__
 
-#include <string>
-#include "const/defs.h"
+#include "generator.h"
 
-std::pair<int, byte*> transIns(std::string ins, char typer, long long op);
+#include <vector>
+#include <string>
+
+struct Ins {
+    std::string ins;
+    Typer typer;
+    long long op;
+};
+
+Ins translate(std::string str, std::vector<std::string> &const_pool);
 
 #endif

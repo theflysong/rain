@@ -32,7 +32,36 @@ namespace ClassCreator {
         return attr;
     }
 
-    //std::pair<std::string, Field> createField(IByteReader& rclass);
-    //std::pair<std::string, Method> createMethod(IByteReader& rclass);
-    //std::vector<std::string> createMemberClasses(IByteReader& rclass);
+    std::pair<short, Field> createField(IByteReader& rclass) {
+        Field::Attributes attr;
+        byte attribute = rclass.next();
+        attr.accese = attribute & 3;
+        attr.is_static = (attribute >> 2) & 1;
+        attr.is_const = (attribute >> 3) & 1;
+        return std::make_pair(rclass.getAsShort(), Field{attr});
+    }
+
+    std::pair<short, Method> createMethod(IByteReader& rclass) {
+        Method::Attributes attr;
+        byte attribute = rclass.next();
+        attr.accese = attribute & 3;
+        attr.is_static = (attribute >> 2) & 1;
+        attr.is_final = (attribute >> 3) & 1;
+        short name = rclass.getAsShort();
+        attr.start = rclass.getAsInt();
+        return std::make_pair(name, Method{attr});
+    }
+
+    std::vector<short> createMemberClasses(IByteReader& rclass) {
+        short num = rclass.getAsShort();
+        std::vector<short> classes;
+        for (int i = 0 ; i < num ; i ++) {
+            classes.push_back(rclass.getAsShort());
+        }
+        return classes;
+    }
+    
+    //std::vector<int> loadAttachAttribue(IByteReader& rclass);
+    //std::vector<int> loadSubAttachAttribue(IByteReader& rclass);
+    //std::vector<byte> loadCodes(IByteReader& rclass);
 }

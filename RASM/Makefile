@@ -1,4 +1,4 @@
-OBJ := main.o translator.o utils/bytehelper.o utils/tostringhelper.o json/cJSON.c.o json/CJsonObject.o
+OBJ := main.o generator.o translator.o utils/bytehelper.o utils/tostringhelper.o json/cJSON.c.o json/CJsonObject.o
 LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=
