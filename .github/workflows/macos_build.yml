@@ -7,9 +7,17 @@ on:
     branches: [ master ]
 
 jobs:
+  build_util:
+
+    runs-on: macOS-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: make
+      run: cd ./configer/ && make
   build_rvm:
 
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -17,7 +25,7 @@ jobs:
       run: cd ./RVM/ && make
   build_rasm:
 
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
 
     steps:
     - uses: actions/checkout@v2

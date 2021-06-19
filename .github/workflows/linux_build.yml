@@ -7,6 +7,14 @@ on:
     branches: [ master ]
 
 jobs:
+  build_util:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: make
+      run: cd ./configer/ && make
   build_rvm:
 
     runs-on: ubuntu-latest
