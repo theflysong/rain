@@ -4,6 +4,7 @@
 #include "../reader/reader.h"
 #include <vector>
 #include <map>
+#include <memory>
 
 #include "field.h"
 #include "method.h"
@@ -24,7 +25,7 @@ public:
     std::map<std::string, Method> method_pool;
     std::vector<std::string> member_classes;
     std::map<std::string, std::vector<std::string>> sub_attach_attr;
-    std::vector<byte> codes;
+    std::unique_ptr<byte[]> codes;
 };
 
 namespace ClassCreator {
@@ -35,8 +36,8 @@ namespace ClassCreator {
     std::pair<short, Method> createMethod(IByteReader& rclass);
     std::vector<short> createMemberClasses(IByteReader& rclass);
     std::vector<int> loadAttachAttribue(IByteReader& rclass);
-    std::vector<int> loadSubAttachAttribue(IByteReader& rclass);
-    std::vector<byte> loadCodes(IByteReader& rclass);
+    std::map<short, std::vector<int>> loadSubAttachAttribue(IByteReader& rclass);
+    std::unique_ptr<byte[]> loadCodes(IByteReader& rclass);
 }
 
 #endif
