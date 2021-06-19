@@ -1,9 +1,9 @@
-OBJ := main.o generator.o translator.o utils/bytehelper.o utils/tostringhelper.o json/cJSON.c.o json/CJsonObject.o
+OBJ := main.o generator.o info_gen.o translator.o utils/bytehelper.o utils/tostringhelper.o json/cJSON.c.o json/CJsonObject.o
 LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=
 GPP := g++
-GPP_FLAGS_RELEASE := -std=c++11
+GPP_FLAGS_RELEASE := -std=c++11 -s
 GPP_FLAGS_DEBUG := -std=c++11
 OUTPUT := rasm
 CONFIGER := ../configer/configer

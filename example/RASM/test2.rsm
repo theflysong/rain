@@ -1,9 +1,7 @@
-# A+B
-main(2):
-    call input(0)
-    call input(0)
+public test2
+method public static main(S[];)V#static
+    call "Rain.IO.inputAsInt()V#static"
+    call "Rain.IO.inputAsInt()V#static"
     add
-    push "%d\n"
-    push 2
-    call print(-1)
+    call "Rain.IO.write(I;)V#static"
     ret
