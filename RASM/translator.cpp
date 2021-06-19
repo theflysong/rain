@@ -1,6 +1,7 @@
 #include "translator.h"
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
 
 Ins translate(std::string str, std::vector<std::string> &const_pool) {
     if (str.find(' ') + 1 == 0)

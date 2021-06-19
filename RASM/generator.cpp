@@ -93,7 +93,7 @@ std::pair<int, byte*> genIns(std::string ins, Typer typer, long long op) {
     int code;
     inst.Get("code", code);
     if (! accept(inst["type"], typer))
-        throw (std::string)"Wrong type";
+        throw (std::string)"Wrong type with " + ins;
     if (typer == Typer::NONE) {
         byte* b = new byte[2];
         b[0] = code;
@@ -109,8 +109,8 @@ std::pair<int, byte*> genIns(std::string ins, Typer typer, long long op) {
                 byte* b = new byte[4];
                 b[0] = code;
                 b[1] = b_t;
-                b[2] = b_op[0];
-                b[3] = b_op[1];
+                b[2] = b_op[6];
+                b[3] = b_op[7];
                 return std::make_pair(4, b);
             }
             else {
@@ -133,17 +133,17 @@ std::pair<int, byte*> genIns(std::string ins, Typer typer, long long op) {
                 byte* b = new byte[3];
                 b[0] = code;
                 b[1] = b_t;
-                b[2] = b_op[0];
+                b[2] = b_op[7];
                 return std::make_pair(3, b);
             }
             else {
                 byte* b = new byte[6];
                 b[0] = code;
                 b[1] = b_t;
-                b[2] = b_op[0];
-                b[3] = b_op[1];
-                b[4] = b_op[2];
-                b[5] = b_op[3];
+                b[2] = b_op[4];
+                b[3] = b_op[5];
+                b[4] = b_op[6];
+                b[5] = b_op[7];
                 return std::make_pair(6, b);
             }
         }
@@ -156,6 +156,24 @@ inline byte CA2B(RainClass clazz) {
         : clazz.access == "friendly" ? 1
         : clazz.access == "protected" ? 2
         : clazz.access == "private" ? 3 : -1) + (clazz.is_member << 2) + (clazz.parents.size() << 3);
+    return b;
+}
+
+inline byte FA2B(Field field) {
+    byte b;
+    b = (field.access == "public" ? 0
+        : field.access == "friendly" ? 1
+        : field.access == "protected" ? 2
+        : field.access == "private" ? 3 : -1) + (field.is_static << 2) + (field.is_const << 3);
+    return b;
+}
+
+inline byte MA2B(Method method) {
+    byte b;
+    b = (method.access == "public" ? 0
+        : method.access == "friendly" ? 1
+        : method.access == "protected" ? 2
+        : method.access == "private" ? 3 : -1) + (method.is_static << 2) + (method.is_final << 3);
     return b;
 }
 
@@ -173,6 +191,13 @@ void generate(std::ostream& ostream, RainClass clazz, std::vector<std::string> i
         name2no[memberClass] = clazz.const_pool.size();
         clazz.const_pool.push_back(memberClass);
     }
+    for (std::string parent : clazz.parents) {
+        name2no[parent] = clazz.const_pool.size();
+        clazz.const_pool.push_back(parent);
+    }for (std::string attr : clazz.attributes) {
+        name2no[attr] = clazz.const_pool.size();
+        clazz.const_pool.push_back(attr);
+    }
     std::vector<Ins> instructions;
     for (auto str : insList) {
         instructions.push_back(translate(str, clazz.const_pool));
@@ -188,5 +213,52 @@ void generate(std::ostream& ostream, RainClass clazz, std::vector<std::string> i
 
     byte b_ca = CA2B(clazz);
     ostream.write(&b_ca, 1);
+    for (auto par : clazz.parents) {
+        ostream.write(asByte((short)name2no[par], b), 2);
+    }
+
+    b_ca = clazz.attributes.size();
+    ostream.write(&b_ca, 1);
+    for (auto attr : clazz.attributes) {
+        ostream.write(asByte((short)name2no[attr], b), 2);
+    }
+
+    ostream.write(asByte((short)clazz.fields.size(), b), 2);
+    for (auto field : clazz.fields) {
+        b_ca = FA2B(field);
+        ostream.write(&b_ca, 1);
+        ostream.write(asByte((short)name2no[field.name], b), 2);
+    }
+
+    ostream.write(asByte((short)clazz.memberClasses.size(), b), 2);
+    for (auto memberClass : clazz.memberClasses) {
+        ostream.write(asByte((short)name2no[memberClass], b), 2);
+    }
+
+    ostream.write(asByte((short)clazz.methods.size(), b), 2);
+    for (auto method : clazz.methods) {
+        b_ca = MA2B(method);
+        ostream.write(&b_ca, 1);
+        ostream.write(asByte((short)name2no[method.name], b), 2);
+    }
+
+    std::vector<std::pair<int, byte*>> codes;
+    int code_length = 0;
+    for (auto ins : instructions) {
+        try {
+            auto p = genIns(ins.ins, ins.typer, ins.op);
+            code_length += p.first;
+            codes.push_back(p);
+        }
+        catch (std::string str) {
+            std::cout << str << std::endl;
+        }
+    }
+
+    ostream.write(asByte(code_length, b), 4);
+    for (auto p : codes) {
+        ostream.write(p.second, p.first);
+        delete[] p.second;
+    }
     delete b;
 }

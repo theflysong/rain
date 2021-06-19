@@ -76,7 +76,7 @@ void _clazzGen(std::istream& in, RainClass& clazz) {
 }
 
 void _fieldGen(std::vector<std::string> _field, RainClass& clazz) {
-    Field field;
+    Field field = {};
     bool f1 = false, f2 = false, f3 = false;
     int now = 1;
     for (; now < _field.size() - 1 ; now ++) {
@@ -109,7 +109,7 @@ void _fieldGen(std::vector<std::string> _field, RainClass& clazz) {
 }
 
 void _methodGen(std::vector<std::string> _method, int start, RainClass& clazz) {
-    Method method;
+    Method method = {};
     bool f1 = false, f2 = false, f3 = false;
     int now = 1;
     for (; now < _method.size() - 1 ; now ++) {
