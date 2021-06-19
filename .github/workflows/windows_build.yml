@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: make
-      run: cd ./RVM/ && make
+      run: cd ./configer/ && make && cd ../RVM/ && make
   build_rasm:
 
     runs-on: windows-latest
@@ -22,4 +22,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: make
-      run: cd ./RASM/ && make
+      run: cd ./configer/ && make && cd ../RASM/ && make
