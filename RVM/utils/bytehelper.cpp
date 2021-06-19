@@ -25,27 +25,27 @@ long long asLongLong(byte b1, byte b2, byte b3, byte b4, byte b5, byte b6, byte 
 }
 
 byte* asByte(short num, byte* out) {
-    out[0] = (num & 0x00FF);
-    out[1] = (num & 0xFF00) >> 8;
+    out[1] = (num & 0x00FF);
+    out[0] = (num & 0xFF00) >> 8;
     return out;
 }
 
 byte* asByte(int num, byte* out) {
-    out[0] = (num & 0x000000FF);
-    out[1] = (num & 0x0000FF00) >> 8;
-    out[2] = (num & 0x00FF0000) >> 16;
-    out[3] = (num & 0xFF000000) >> 24;
+    out[3] = (num & 0x000000FF);
+    out[2] = (num & 0x0000FF00) >> 8;
+    out[1] = (num & 0x00FF0000) >> 16;
+    out[0] = (num & 0xFF000000) >> 24;
     return out;
 }
 
 byte* asByte(long long num, byte* out) {
-    out[0] = (num & 0x00000000000000FF);
-    out[1] = (num & 0x000000000000FF00) >> 8;
-    out[2] = (num & 0x0000000000FF0000) >> 16;
-    out[3] = (num & 0x00000000FF000000) >> 24;
-    out[4] = (num & 0x000000FF00000000) >> 32;
-    out[5] = (num & 0x0000FF0000000000) >> 40;
-    out[6] = (num & 0x00FF000000000000) >> 48;
-    out[7] = (num & 0xFF00000000000000) >> 56;
+    out[7] = (num & 0x00000000000000FF);
+    out[6] = (num & 0x000000000000FF00) >> 8;
+    out[5] = (num & 0x0000000000FF0000) >> 16;
+    out[4] = (num & 0x00000000FF000000) >> 24;
+    out[3] = (num & 0x000000FF00000000) >> 32;
+    out[2] = (num & 0x0000FF0000000000) >> 40;
+    out[1] = (num & 0x00FF000000000000) >> 48;
+    out[0] = (num & 0xFF00000000000000) >> 56;
     return out;
 }

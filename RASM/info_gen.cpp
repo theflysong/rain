@@ -5,13 +5,14 @@ std::string getStr(std::istream& in, char& last) {
     char ch;
     if (in.peek() == '"') {
         in.get();
+        str += "\"";
         while (true) {
             in.get(ch);
             if (ch == '"' || ch == '\n' || ch == '\r' || in.eof())
                 break;
             str += ch;
         }
-        str = str.substr(0, str.size());
+        str += "\"";
         last = ch;
         if (str == "" || str == "\0")
             return "";
@@ -53,7 +54,7 @@ void _clazzGen(std::istream& in, RainClass& clazz) {
     for (; now < _clazz.size() - 1 ; now ++) {
         if (_clazz[now] == "from")
             break;
-        if (_clazz[now] == "public" || _clazz[now] == "public" || _clazz[now] == "public") {
+        if (_clazz[now] == "public" || _clazz[now] == "friendly" || _clazz[now] == "protected" || _clazz[now] == "private") {
             if (f1)
                 throw "don't write accese attribute twice";
             clazz.access = _clazz[now];
@@ -81,7 +82,7 @@ void _fieldGen(std::vector<std::string> _field, RainClass& clazz) {
     for (; now < _field.size() - 1 ; now ++) {
         if (_field[now] == "from")
             break;
-        if (_field[now] == "public" || _field[now] == "public" || _field[now] == "public") {
+        if (_field[now] == "public" || _field[now] == "friendly" || _field[now] == "protected" || _field[now] == "private") {
             if (f1)
                 throw "don't write accese attribute twice";
             field.access = _field[now];
@@ -107,14 +108,14 @@ void _fieldGen(std::vector<std::string> _field, RainClass& clazz) {
     clazz.fields.push_back(field);
 }
 
-void _methodGen(std::vector<std::string> _method, RainClass& clazz) {
+void _methodGen(std::vector<std::string> _method, int start, RainClass& clazz) {
     Method method;
     bool f1 = false, f2 = false, f3 = false;
     int now = 1;
     for (; now < _method.size() - 1 ; now ++) {
         if (_method[now] == "from")
             break;
-        if (_method[now] == "public" || _method[now] == "public" || _method[now] == "public") {
+        if (_method[now] == "public" || _method[now] == "friendly" || _method[now] == "protected" || _method[now] == "private") {
             if (f1)
                 throw "don't write accese attribute twice";
             method.access = _method[now];
@@ -137,14 +138,16 @@ void _methodGen(std::vector<std::string> _method, RainClass& clazz) {
         method.attributes.push_back(_method[now]);
     }
     method.name = _method[_method.size() - 1];
+    method.start = start;
     clazz.methods.push_back(method);
 }
 
 inline std::string VECTOR2STR(std::vector<std::string> vec) {
     std::string str = "";
     for (auto s : vec) {
-        str = str + " " + s;
+        str = str + s + " ";
     }
+    str = str.substr(0, str.size() - 1);
     return str;
 }
 
@@ -163,12 +166,14 @@ void _memberClassGen(std::vector<std::string> _memberClass, RainClass& clazz) {
 
 void _memberGen(std::istream& in, std::vector<std::string>& insList, RainClass& clazz) {
     std::vector<std::string> _member = getLineStr(in);
+    if (_member.size() == 0)
+        return;
 #define _head _member[0]
     if (_head == "field") {
         _fieldGen(_member, clazz);
     }
     else if (_head == "method") {
-        _methodGen(_member, clazz);
+        _methodGen(_member, insList.size(), clazz);
         _codeGen(in, insList);
     }
     else if(_head == "class") {

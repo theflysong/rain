@@ -1,7 +1,9 @@
 #include "generator.h"
+#include "translator.h"
 #include "json/CJsonObject.hpp"
 #include <iostream>
 #include "utils/bytehelper.h"
+#include <map>
 
 neb::CJsonObject generator(
 #include "instructions.jstr"
@@ -146,4 +148,45 @@ std::pair<int, byte*> genIns(std::string ins, Typer typer, long long op) {
             }
         }
     }
+}
+
+inline byte CA2B(RainClass clazz) {
+    byte b;
+    b = (clazz.access == "public" ? 0
+        : clazz.access == "friendly" ? 1
+        : clazz.access == "protected" ? 2
+        : clazz.access == "private" ? 3 : -1) + (clazz.is_member << 2) + (clazz.parents.size() << 3);
+    return b;
+}
+
+void generate(std::ostream& ostream, RainClass clazz, std::vector<std::string> insList) {
+    std::map<std::string, int> name2no;
+    for (Field field : clazz.fields) {
+        name2no[field.name] = clazz.const_pool.size();
+        clazz.const_pool.push_back(field.name);
+    }
+    for (Method method : clazz.methods) {
+        name2no[method.name] = clazz.const_pool.size();
+        clazz.const_pool.push_back(method.name);
+    }
+    for (std::string memberClass : clazz.memberClasses) {
+        name2no[memberClass] = clazz.const_pool.size();
+        clazz.const_pool.push_back(memberClass);
+    }
+    std::vector<Ins> instructions;
+    for (auto str : insList) {
+        instructions.push_back(translate(str, clazz.const_pool));
+    }
+
+    byte* b = new byte[65536];
+    ostream.write(asByte((int)clazz.const_pool.size(), b), 4);
+
+    for (auto str : clazz.const_pool) {
+        ostream.write(asByte((short)str.length(), b), 2);
+        ostream.write(str.c_str(), str.length());
+    }
+
+    byte b_ca = CA2B(clazz);
+    ostream.write(&b_ca, 1);
+    delete b;
 }

@@ -19,6 +19,7 @@ struct Method {
     bool is_final;
     bool is_static;
     std::vector<std::string> attributes;
+    int start;
 };
 
 struct RainClass {

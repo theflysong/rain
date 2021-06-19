@@ -1,8 +1,9 @@
 #include "translator.h"
 #include <cstdlib>
+#include <iostream>
 
 Ins translate(std::string str, std::vector<std::string> &const_pool) {
-    if (str.find(' ') == std::string::npos)
+    if (str.find(' ') + 1 == 0)
         return Ins{str, Typer::NONE, 0};
     std::string ins = str.substr(0, str.find(' '));
     str = str.substr(str.find(' ') + 1);

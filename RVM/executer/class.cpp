@@ -4,8 +4,8 @@
 namespace ClassCreator {
     RainClass createClass(IByteReader& rclass) {
         RainClass rc;
-        short num = rclass.getAsShort();
-        for (short i = 0 ; i < num ; i ++) {
+        int num = rclass.getAsInt();
+        for (int i = 0 ; i < num ; i ++) {
             rc.const_pool.push_back(createEntry(rclass));
         }
         rc.attributes = loadAtrribute(rclass);

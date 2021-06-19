@@ -5,16 +5,19 @@
 #include "info_gen.h"
 
 int main(int argc, const char** argv) {
-    if (argc <= 1) {
+    if (argc <= 2) {
         return -1;
     }
     std::ifstream fin(argv[1]);
-    RainClass clazz;
+    std::ofstream fout(argv[2], std::ios::binary);
+    RainClass clazz = {};
 
     _clazzGen(fin, clazz);
+    std::vector<std::string> insList;
 
     while (! fin.eof()) {
+        _memberGen(fin, insList, clazz);
     }
-    //Ins ins = translate("push \"1\"", clazz.const_pool);
+    generate(fout, clazz, insList);
     return 0;
 }
