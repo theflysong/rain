@@ -18,5 +18,7 @@
 *.suo
 *.stackdump
 *.exe
-read.md
+*.dll
+*.so
+*.dylib
 .vscode/

@@ -8,18 +8,22 @@ on:
 
 jobs:
   build_rvm:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: make
       run: cd ./configer/ && make && cd ../RVM/ && make
+
   build_rasm:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: make
       run: cd ./configer/ && make && cd ../RASM/ && make
+
+  build_rni:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: make
+      run: ./RNI/ && make
