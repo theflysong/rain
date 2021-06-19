@@ -124,7 +124,7 @@ void _methodGen(std::vector<std::string> _method, RainClass& clazz) {
         else if (_method[now] == "final") {
             if (f2)
                 throw "don't write final attribute twice";
-            method.is_const = true;
+            method.is_final = true;
             f2 = true;
             continue;
         }else if (_method[now] == "static") {

@@ -2,6 +2,7 @@
 #define __CLASS_INFO__
 
 #include <vector>
+#include <string>
 #include "./const/defs.h"
 
 struct Field {
