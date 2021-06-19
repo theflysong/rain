@@ -26,4 +26,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: make
-      run: ./RNI/ && make
+      run: cd ./RNI/ && make
