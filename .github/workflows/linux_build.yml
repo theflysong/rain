@@ -7,12 +7,19 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build_rvm:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: make
-      run_rvm: cd ./RVM/ && make
-      run_rasm: cd ./RASM/ && make
+      run: cd ./RVM/ && make
+  build_rasm:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: make
+      run: cd ./RASM/ && make
