@@ -2,20 +2,11 @@
 #include "./executer/executer.h"
 #include "./utils/tostringhelper.h"
 #include <iostream>
-#include "lib/rni.h"
-
-RNIValue func(std::vector<RNIValue>) {
-    RNIValue result {new int};
-    *(int*)(result.ptr) = 2;
-    return result;
-}
+#include <cstring>
+#include "./utils/rni_util.h"
 
 int main(int argc, char** argv) {
-    int a = 1, b = 2;
-    std::cout << 1 << std::endl;
-    registryFunction("func", func);
-    RNIValue result = getFunction("func")(std::vector<RNIValue>());
-    std::cout << result.ptr << std::endl;
-    delete result.ptr;
+    std::cout << findMethod("RdkNative", "rain.lang.Object", "finalize(V;)I").method;
+    std::cout << findMethod("RdkNative", "rain.lang.Object", "finalize(V;)V").method;
     return 0;
 }

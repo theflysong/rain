@@ -1,11 +1,11 @@
 OBJ := main.o reader/reader.o executer/class.o executer/value.o executer/instruction.o \
-	executer/executer.o utils/bytehelper.o utils/tostringhelper.o
+	executer/executer.o utils/bytehelper.o utils/tostringhelper.o utils/rni_util.o
 LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=
 GPP := g++
-GPP_FLAGS_RELEASE := -std=c++11 -L ./lib -lRNI
-GPP_FLAGS_DEBUG := -std=c++11 -L ./lib -lRNI
+GPP_FLAGS_RELEASE := -std=c++11 -I "../RNI/"
+GPP_FLAGS_DEBUG := -std=c++11 -I "../RNI/"
 OUTPUT := rain
 CONFIGER := ../configer/configer
 

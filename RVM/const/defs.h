@@ -6,6 +6,7 @@
 #define interface class
 #define EOR (-1)
 #define isEOR(eor) (!(~eor))
+
 typedef char byte;
 
 #define P_PRIVATE 0

@@ -18,7 +18,7 @@
 *.suo
 *.stackdump
 *.exe
-*.dll
+RNI/*.dll
 *.so
 *.dylib
 .vscode/
