@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <cstring>
 
 #ifdef I_OS_WIN
 #define byte a_byte
