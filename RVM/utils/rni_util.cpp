@@ -41,7 +41,16 @@ void onTerminate() {
 }
 #endif
 
+#if defined(I_OS_LINUX) || defined(I_OS_MACOS)
 #ifdef I_OS_LINUX
+std::string getLibName(const char* libName) {
+    return (std::string)"lib" + libName + ".so";
+}
+#else
+std::string getLibName(const char* libName) {
+    return (std::string)"lib" + libName + ".dylib";
+}
+#endif
 #include <dlfcn.h>
 std::map<std::string, void*> loadedList;
 
@@ -50,7 +59,7 @@ void* GetLib(const char* libName) {
         return loadedList[libName];
     }
     else {
-        return dlopen(((std::string)libName + ".dll").c_str(), RTLD_LAZY);
+        return dlopen(getLibName(libName).c_str(), RTLD_LAZY);
     }
 }
 
