@@ -3,12 +3,12 @@
 
 #include <stdint.h>
 
-typedef int64_t rlong;
-typedef int32_t rint;
-typedef int16_t rshort;
-typedef uint64_t urlong;
-typedef uint32_t urint;
-typedef uint16_t urshort;
+typedef int64_t r_long;
+typedef int32_t r_int;
+typedef int16_t r_short;
+typedef uint64_t ur_long;
+typedef uint32_t ur_int;
+typedef uint16_t ur_short;
 
 struct MethodInfo {
     const char* name;
