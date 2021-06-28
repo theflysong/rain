@@ -21,4 +21,9 @@
 *.so
 *.dll
 *.dylib
+configer/configer
+RVM/rain
+ByteCodeWriter/bytecodewriter
+RASM/rasm
+RainC/rainc
 .vscode/
