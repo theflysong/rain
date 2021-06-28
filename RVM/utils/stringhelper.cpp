@@ -14,7 +14,15 @@ std::string acceseToString(byte accese) {
     return "unknow";
 }
 
-
 std::string toString(bool flag) {
     return flag ? "true" : "false";
+}
+
+std::string replaceAll(std::string source, std::string from, std::string to) {
+    register int pos = source.find(from);
+    while (pos != std::string::npos) {
+        source.replace(pos, pos + from.length(), to);
+        pos = source.find(from);
+    }
+    return source;
 }
