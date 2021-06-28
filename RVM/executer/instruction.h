@@ -5,21 +5,23 @@
 #include "../reader/reader.h"
 #include <map>
 
-class Executer;
-struct Instruction;
+namespace Runtime {
+    class Executer;
+    struct Instruction;
 
-typedef void(*ins_handle)(Executer*, Instruction ins);
+    typedef void(*ins_handle)(Executer*, Instruction ins);
 
-void __ins_init();
+    void __ins_init();
 
-extern std::map<byte, ins_handle> ins_map;
+    extern std::map<byte, ins_handle> ins_map;
 
-struct Instruction {
-    ins_handle handle;
-    byte typer;
-    long long op;
-};
+    struct Instruction {
+        ins_handle handle;
+        byte typer;
+        long long op;
+    };
 
-Instruction genIns(IByteReader& reader);
+    Instruction genIns(IByteReader& reader);
+}
 
 #endif

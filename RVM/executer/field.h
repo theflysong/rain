@@ -3,14 +3,16 @@
 
 #include "../const/defs.h"
 
-struct Field {
-    struct Attributes {
-        unsigned char accese : 2;
-        bool is_const : 1;
-        bool is_static : 1;
-        unsigned : 4;
+namespace Runtime {
+    struct Field {
+        struct Attributes {
+            unsigned char accese : 2;
+            bool is_const : 1;
+            bool is_static : 1;
+            unsigned : 4;
+        };
+        Attributes attributes;
     };
-    Attributes attributes;
-};
+}
 
 #endif

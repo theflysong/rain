@@ -3,15 +3,18 @@
 
 #include "../const/defs.h"
 
-struct Method {
-    struct Attributes {
-        unsigned char accese : 2;
-        bool is_final : 1;
-        bool is_static : 1;
-        unsigned : 4;
-        int start;
+namespace Runtime {
+    struct Method {
+        struct Attributes {
+            unsigned char accese : 2;
+            bool is_final : 1;
+            bool is_static : 1;
+            unsigned : 4;
+            int start;
+        };
+        Attributes attributes;
     };
-    Attributes attributes;
-};
+}
+
 
 #endif

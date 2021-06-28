@@ -1,8 +1,6 @@
 #include "rni_util.h"
 #include "osplatformutil.h"
 
-#include <map>
-#include <string>
 #include <iostream>
 #include <cstring>
 
@@ -45,11 +43,11 @@ void onTerminate() {
 #if defined(I_OS_LINUX) || defined(I_OS_MACOS)
 #ifdef I_OS_LINUX
 std::string getLibName(const char* libName) {
-    return (std::string)"lib" + libName + ".so";
+    return (std::string)"./lib" + libName + ".so";
 }
 #else
 std::string getLibName(const char* libName) {
-    return (std::string)"lib" + libName + ".dylib";
+    return (std::string)"./lib" + libName + ".dylib";
 }
 #endif
 #include <dlfcn.h>
@@ -60,7 +58,12 @@ void* GetLib(const char* libName) {
         return loadedList[libName];
     }
     else {
-        return dlopen(getLibName(libName).c_str(), RTLD_LAZY);
+        void* p = dlopen(getLibName(libName).c_str(), RTLD_LAZY);
+        const char* error = dlerror();
+        if (error != (const char*)0) {
+            std::cerr << error << std::endl;
+        }
+        return p;
     }
 }
 
