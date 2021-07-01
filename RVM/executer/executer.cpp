@@ -24,8 +24,8 @@ namespace Runtime {
     }
 
     void Environment::setClass(RainClass clazz, std::string package) {
-        this->context.currentClass = clazz;
         clazz.package = package;
+        this->context.currentClass = clazz;
     }
 
 
