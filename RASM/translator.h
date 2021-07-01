@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 struct Ins {
     std::string ins;
@@ -12,6 +13,6 @@ struct Ins {
     long long op;
 };
 
-Ins translate(std::string str, std::vector<std::string> &const_pool);
+Ins translate(std::string str, std::vector<std::string> &const_pool, std::map<std::string, r_int> &name2no);
 
 #endif

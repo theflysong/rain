@@ -1,6 +1,7 @@
 #include "reader.h"
 #include "../utils/bytehelper.h"
 #include <fstream>
+#include <iostream>
 
 FileByteReader::FileByteReader(std::string filename) {
     this->load(filename);
@@ -50,23 +51,24 @@ byte* FileByteReader::gets(byte* out, int num) {
     return out;
 }
 
-short FileByteReader::getAsShort() {
+r_short FileByteReader::getAsShort() {
     byte *value = new byte[2];
     short result = asShort(gets(value, 2));
-    delete value;
+    delete[] value;
     return result;
 }
 
-int FileByteReader::getAsInt() {
+r_int FileByteReader::getAsInt() {
     byte *value = new byte[4];
-    int result = asInt(gets(value, 4));
-    delete value;
+    gets(value, 4);
+    int result = asInt(value);
+    delete[] value;
     return result;
 }
 
-long long FileByteReader::getAsLongLong() {
+r_long FileByteReader::getAsLong() {
     byte *value = new byte[8];
-    long long result = asLongLong(gets(value, 8));
-    delete value;
+    r_long result = asLong(gets(value, 8));
+    delete[] value;
     return result;
 }

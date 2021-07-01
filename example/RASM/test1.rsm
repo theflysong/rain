@@ -1,6 +1,6 @@
 public test1
 method public static main(S[];)V#static
     push "Hello, World!"
-    call "Rain.IO.write(S;)V#static"
+    call "Rain.Console.write(S;)V#static"
     ret
 end

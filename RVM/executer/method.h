@@ -2,6 +2,7 @@
 #define __METHOD_HEADER__
 
 #include "../const/defs.h"
+#include <string>
 
 namespace Runtime {
     struct Method {
@@ -10,9 +11,10 @@ namespace Runtime {
             bool is_final : 1;
             bool is_static : 1;
             unsigned : 4;
-            int start;
+            r_int start;
         };
         Attributes attributes;
+        std::string name;
     };
 }
 

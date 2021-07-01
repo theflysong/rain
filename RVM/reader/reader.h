@@ -24,9 +24,9 @@ public:
 abstract class IByteReader : implement IReader<byte> {
 public:
     virtual byte* gets(byte* out, int num) = 0;
-    virtual short getAsShort() = 0;
-    virtual int getAsInt() = 0;
-    virtual long long getAsLongLong() = 0;
+    virtual r_short getAsShort() = 0;
+    virtual r_int getAsInt() = 0;
+    virtual r_long getAsLong() = 0;
 };
 
 class FileByteReader : public IByteReader {
@@ -35,9 +35,9 @@ class FileByteReader : public IByteReader {
 public:
     FileByteReader(std::string filename);
     byte* gets(byte* out, int num) override final;
-    short getAsShort() override final;
-    int getAsInt() override final;
-    long long getAsLongLong() override final;
+    r_short getAsShort() override final;
+    r_int getAsInt() override final;
+    r_long getAsLong() override final;
     byte next() override final;
     byte peek() override final;
     byte last() override final;

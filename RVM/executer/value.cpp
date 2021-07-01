@@ -27,8 +27,8 @@ namespace Runtime {
         return this->pointer;
     }
 
-    float& Value::getAsNumber() {
-        return *((float*)pointer);
+    r_real& Value::getAsNumber() {
+        return *((r_real*)pointer);
     }
 
     std::string& Value::getAsString() {
@@ -39,12 +39,12 @@ namespace Runtime {
         return *((Object*)pointer);
     }
 
-    void Value::set(float value) {
+    void Value::set(r_real value) {
         if (this->type != NUMBER) {
-            delete (float*)pointer;
-            pointer = (void*)new float;
+            delete (r_real*)pointer;
+            pointer = (void*)new r_real;
         }
-        *((float*)pointer) = value;
+        *((r_real*)pointer) = value;
     }
 
     void Value::set(std::string value) {
@@ -67,8 +67,8 @@ namespace Runtime {
         pointer = NULL;
     }
 
-    Value::Value(float value, bool is_const) {
-        pointer = (void*)new float(value);
+    Value::Value(r_real value, bool is_const) {
+        pointer = (void*)new r_real(value);
         this->iconst = is_const;
         this->type = NUMBER;
     }
@@ -102,5 +102,9 @@ namespace Runtime {
 
     Reference Reference::copy() {
         return *this;
+    }
+
+    std::shared_ptr<Value> Reference::operator->() {
+        return ptr;
     }
 }

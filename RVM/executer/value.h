@@ -28,17 +28,17 @@ namespace Runtime {
         void* pointer;
     public:
         Value();
-        Value(float value, bool is_const = false);
+        Value(r_real value, bool is_const = false);
         Value(std::string value, bool is_const = false);
         Value(Object value, bool is_const = false);
         ~Value();
         Type getType();
         void setType(Type type);
         void* getPointer();
-        float& getAsNumber();
+        r_real& getAsNumber();
         Object& getAsObject();
         std::string& getAsString();
-        void set(float value);
+        void set(r_real value);
         void set(std::string value);
         void set(Object value);
     };
@@ -50,6 +50,7 @@ namespace Runtime {
         Reference(std::shared_ptr<Value> _ptr);
         std::shared_ptr<Value> getValue();
         Reference copy();
+        std::shared_ptr<Value> operator->();
     };
 }
 

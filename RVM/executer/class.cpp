@@ -1,5 +1,8 @@
 #include "./class.h"
 #include <iostream>
+#define byte AAAAAAA
+#include <windows.h>
+#undef byte
 
 namespace Runtime {
     namespace ClassCreator {
@@ -9,7 +12,7 @@ namespace Runtime {
             for (int i = 0 ; i < num ; i ++) {
                 rc.const_pool.push_back(createEntry(rclass));
             }
-            rc.attributes = loadAtrribute(rclass);
+            loadAtrribute(rclass, rc);
             std::vector<int> _attach_attr = loadAttachAttribue(rclass);
             for (int _attr : _attach_attr) {
                 rc.attach_attr.push_back(rc.const_pool[_attr]);
@@ -18,12 +21,14 @@ namespace Runtime {
             short fields_num = rclass.getAsShort();
             for (int i = 0 ; i < fields_num ; i ++) {
                 auto e = createField(rclass);
+                e.second.name = rc.const_pool[e.first];
                 rc.feild_pool[rc.const_pool[e.first]] = e.second;
             }
 
             short method_num = rclass.getAsShort();
             for (int i = 0 ; i < method_num ; i ++) {
                 auto e = createMethod(rclass);
+                e.second.name = rc.const_pool[e.first];
                 rc.method_pool[rc.const_pool[e.first]] = e.second;
             }
 
@@ -45,22 +50,21 @@ namespace Runtime {
 
         std::string createEntry(IByteReader& rclass) {
             short num = rclass.getAsShort();
-            byte* b_entry = new byte[num];
+            byte* b_entry = new byte[num + 1];
+            b_entry[num] = 0;
             std::string entry = rclass.gets(b_entry, num);
             delete b_entry;
             return entry;
         }
 
-        RainClass::Attributes loadAtrribute(IByteReader& rclass) {
-            RainClass::Attributes attr;
+        void loadAtrribute(IByteReader& rclass, RainClass& clazz) {
             byte attribute = rclass.next();
-            attr.accese = attribute & 3; // attribute & 00000011
-            attr.is_member = (attribute >> 2) & 1; // (attribute >> 2) & 000001
-            attr.parent_num = (attribute >> 3) & 31; // (attribute >> 3) & 11111
-            for (int i = 0 ; i < attr.parent_num ; i ++) {
-                attr.parents.push_back(rclass.getAsShort());
+            clazz.attributes.accese = attribute & 3; // attribute & 00000011
+            clazz.attributes.is_member = (attribute >> 2) & 1; // (attribute >> 2) & 000001
+            int parent_num = (attribute >> 3) & 31; // (attribute >> 3) & 11111
+            for (int i = 0 ; i < parent_num ; i ++) {
+                clazz.parents.push_back(clazz.const_pool[rclass.getAsShort()]);
             }
-            return attr;
         }
 
         std::pair<short, Field> createField(IByteReader& rclass) {
@@ -109,7 +113,7 @@ namespace Runtime {
                 byte attr_num = rclass.next();
 
                 std::vector<int> attrs;
-                for (int i = 0 ; i < num ; i ++) {
+                for (int j = 0 ; j < attr_num ; j ++) {
                     attrs.push_back(rclass.getAsInt());
                 }
                 attr_map[name] = attrs;
@@ -117,11 +121,11 @@ namespace Runtime {
             return attr_map;
         }
 
-        std::unique_ptr<byte[]> loadCodes(IByteReader& rclass) {
+        std::pair<std::shared_ptr<byte[]>, int> loadCodes(IByteReader& rclass) {
             int length = rclass.getAsInt();
-            std::unique_ptr<byte[]> ptr(new byte[length]);
+            std::shared_ptr<byte[]> ptr(new byte[length], std::default_delete<byte[]>());
             rclass.gets(ptr.get(), length);
-            return ptr;
+            return std::make_pair(ptr, length);
         }
     }
 }

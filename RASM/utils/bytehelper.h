@@ -3,14 +3,14 @@
 
 #include "../const/defs.h"
 
-short asShort(byte* bytes);
-short asShort(byte b1, byte b2);
-int asInt(byte* bytes);
-int asInt(byte b1, byte b2, byte b3, byte b4);
-long long asLongLong(byte* bytes);
-long long asLongLong(byte b1, byte b2, byte b3, byte b4, byte b5, byte b6, byte b7, byte b8);
-byte* asByte(short num, byte* out);
-byte* asByte(int num, byte* out);
-byte* asByte(long long num, byte* out);
+r_short asShort(byte* bytes);
+r_short asShort(byte b1, byte b2);
+r_int asInt(byte* bytes);
+r_int asInt(byte b1, byte b2, byte b3, byte b4);
+r_long asLongLong(byte* bytes);
+r_long asLongLong(byte b1, byte b2, byte b3, byte b4, byte b5, byte b6, byte b7, byte b8);
+byte* asByte(r_short num, byte* out);
+byte* asByte(r_int num, byte* out);
+byte* asByte(r_long num, byte* out);
 
 #endif

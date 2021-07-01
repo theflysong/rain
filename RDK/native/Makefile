@@ -1,4 +1,4 @@
-OBJ := rdk.o class/object.o
+OBJ := rdk.o clazz/Object.o
 LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=

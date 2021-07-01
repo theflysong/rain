@@ -2,6 +2,7 @@
 #define __FIELD_HEADER__
 
 #include "../const/defs.h"
+#include <string>
 
 namespace Runtime {
     struct Field {
@@ -12,6 +13,7 @@ namespace Runtime {
             unsigned : 4;
         };
         Attributes attributes;
+        std::string name;
     };
 }
 

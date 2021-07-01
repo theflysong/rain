@@ -6,10 +6,10 @@
 #include <map>
 
 namespace Runtime {
-    class Executer;
+    class Environment;
     struct Instruction;
 
-    typedef void(*ins_handle)(Executer*, Instruction ins);
+    typedef void(*ins_handle)(Environment*, Instruction ins);
 
     void __ins_init();
 

@@ -1,4 +1,4 @@
-#include "object.h"
+#include "Object.h"
 
 r_value _Object_finalize(r_value* args, int argSum) {
     return r_null;
@@ -14,4 +14,4 @@ MethodInfo Object_finalize = {"finalize(V;)V", _Object_finalize};
 MethodInfo Object_test = {"test(II;)I", _Object_test};
 
 MethodInfo objectMethods[] = {Object_finalize, Object_test, NULL_METHOD_INFO};
-ClassInfo objectClass = {"rain.lang.Object", objectMethods};
+ClassInfo objectClass = {"rain.clazz.Object", objectMethods};

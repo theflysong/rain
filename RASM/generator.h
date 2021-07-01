@@ -16,9 +16,9 @@ enum class Typer {
     UNKNOWN
 };
 
-std::pair<int, byte*> genIns(std::string ins, Typer typer, long long op);
-byte TyperToByte(Typer typer, long long op);
-Typer toTyper(int typer);
+std::pair<r_int, byte*> genIns(std::string ins, Typer typer, r_long op);
+byte TyperToByte(Typer typer, r_long op);
+Typer toTyper(r_int typer);
 Typer toTyper(char typer);
 
 void generate(std::ostream& ostream, RainClass clazz, std::vector<std::string> insList);

@@ -7,7 +7,7 @@
 #define EOR (-1)
 #define isEOR(eor) (!(~eor))
 
-typedef char byte;
+#include <types.h>
 
 #define P_PRIVATE 0
 #define P_PROTECTED 1

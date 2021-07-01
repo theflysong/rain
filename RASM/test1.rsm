@@ -1,6 +1,9 @@
-private test1
+public test1
 method public static main(S[];)V#static
+    pop %0
     push "Hello, World!"
-    call "Rain.IO.write(S;)V#static"
+    call "Rain.Console.write(S;)V#static"
     ret
+end
+method public static native test(V;)V#static
 end

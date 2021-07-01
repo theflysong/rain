@@ -1,6 +1,8 @@
 #include "instruction.h"
 #include "executer.h"
 #include <cstdio>
+#include <iostream>
+#include <algorithm>
 
 namespace Runtime {
     std::map<byte, ins_handle> ins_map;
@@ -13,41 +15,36 @@ namespace Runtime {
         bool isCon;
         bool isValue;
     };
-
     TyperValue makeTyper(Reference ref) {
         TyperValue tv = {};
         tv.ref = ref;
         tv.isRef = true;
         return tv;
     }
-
     TyperValue makeTyper(std::string con) {
         TyperValue tv = {};
         tv.con = con;
         tv.isCon = true;
         return tv;
     }
-
     TyperValue makeTyper(long long value) {
         TyperValue tv = {};
         tv.value = value;
         tv.isValue = true;
         return tv;
     }
-
     TyperValue makeTyper() {
         TyperValue tv = {};
         return tv;
     }
-
-    TyperValue getByTyper(Executer *exe, byte typer, long long op) {
+    TyperValue getByTyper(Environment *env, byte typer, long long op) {
         switch (typer) {
         case 1:
         case 2:
-            return makeTyper(exe->getContext().currentClass.const_pool[op]);
+            return makeTyper(env->getContext().currentClass.const_pool[op]);
         case 3:
         case 4:
-            return makeTyper(exe->getContext().variablePool[op]);
+            return makeTyper(env->getContext().variablePool[op]);
         case 5:
         case 6:
         case 7:
@@ -58,198 +55,224 @@ namespace Runtime {
         }
     }
 
-    void __test_printer(Executer* exe, Instruction ins) {
+    inline bool checkNative(Method method, RainClass clazz) {
+        std::vector<std::string> attr = clazz.sub_attach_attr[method.name];
+        return std::find(attr.begin(), attr.end(), "native") != attr.end();
+    }
+
+    void _ret(Environment* env, Instruction ins);
+
+    void __test_printer(Environment* env, Instruction ins) {
         printf("Test output:%lld\n", ins.op);
     }
-
-    void _nop(Executer* exe, Instruction ins) {
+    void _nop(Environment* env, Instruction ins) {
     }
+    void _add(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _add(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() + num2.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() + num2->getAsNumber())));
     }
+    void _sub(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _sub(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() - num2.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() - num2->getAsNumber())));
     }
+    void _mul(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _mul(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() * num2.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() * num2->getAsNumber())));
     }
+    void _div(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _div(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() / num2.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() / num2->getAsNumber())));
     }
+    void _mod(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _mod(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(((int)num1.getValue()->getAsNumber()) % ((int)num2.getValue()->getAsNumber()))));
+        env->pushValue(Reference(std::make_shared<Value>(((int)num1->getAsNumber()) % ((int)num2->getAsNumber()))));
     }
+    void _shr(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _shr(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(((int)num1.getValue()->getAsNumber()) >> ((int)num2.getValue()->getAsNumber()))));
+        env->pushValue(Reference(std::make_shared<Value>(((int)num1->getAsNumber()) >> ((int)num2->getAsNumber()))));
     }
+    void _shl(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _shl(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(((int)num1.getValue()->getAsNumber()) << ((int)num2.getValue()->getAsNumber()))));
+        env->pushValue(Reference(std::make_shared<Value>(((int)num1->getAsNumber()) << ((int)num2->getAsNumber()))));
     }
-
-    void _push(Executer* exe, Instruction ins) {
-        TyperValue tv = getByTyper(exe, ins.typer, ins.op);
+    void _push(Environment* env, Instruction ins) {
+        TyperValue tv = getByTyper(env, ins.typer, ins.op);
         if (tv.isValue)
-            exe->pushValue(Reference(std::make_shared<Value>(tv.value)));
+            env->pushValue(Reference(std::make_shared<Value>(tv.value)));
         if (tv.isCon)
-            exe->pushValue(Reference(std::make_shared<Value>(tv.con)));
+            env->pushValue(Reference(std::make_shared<Value>(tv.con)));
         if (tv.isRef)
-            exe->pushValue(tv.ref);
+            env->pushValue(tv.ref);
     }
-
-    void _pop(Executer* exe, Instruction ins) {
-        exe->getContext().variablePool[ins.op] = exe->popValue();
+    void _pop(Environment* env, Instruction ins) {
+        env->getContext().variablePool[ins.op] = env->popValue();
     }
-
-    void _call(Executer* exe, Instruction ins) { //TODO
+    void _call(Environment* env, Instruction ins) {
+        env->getExecuter().pushPi();
+        std::string methodpath = env->getContext().currentClass.const_pool[ins.op];
+        std::string package = methodpath.substr(0, methodpath.find_last_of('.'));
+        std::string methodName = methodpath.substr(methodpath.find_last_of('.') + 1);
+        if (env->getContext().currentClass.package != package) {
+            env->setClass(package);
+        }
+        Method method = env->getContext().currentClass.method_pool[methodName];
+        env->setMethod(method);
+        if (checkNative(method, env->getContext().currentClass)) {
+            std::cout << "It's native method";
+            _ret(env, ins);
+            return;
+        }
+        env->getExecuter().jmp(method.attributes.start);
     }
+    void _sml(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _sml(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() < num2.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() < num2->getAsNumber())));
     }
+    void _big(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _big(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() > num2.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() > num2->getAsNumber())));
     }
+    void _equ(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _equ(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() == num2.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() == num2->getAsNumber())));
     }
+    void _seq(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _seq(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() <= num2.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() <= num2->getAsNumber())));
     }
+    void _beq(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _beq(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(num1.getValue()->getAsNumber() >= num2.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() >= num2->getAsNumber())));
     }
+    void _not(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
 
-    void _not(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(!(bool)num1.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(!(bool)num1->getAsNumber())));
     }
+    void _neg(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
 
-    void _neg(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(-num1.getValue()->getAsNumber())));
+        env->pushValue(Reference(std::make_shared<Value>(-num1->getAsNumber())));
     }
+    void _and(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _and(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(((bool)num1.getValue()->getAsNumber()) & ((bool)num2.getValue()->getAsNumber()))));
+        env->pushValue(Reference(std::make_shared<Value>(((bool)num1->getAsNumber()) & ((bool)num2->getAsNumber()))));
     }
+    void _or(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _or(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(((bool)num1.getValue()->getAsNumber()) | ((bool)num2.getValue()->getAsNumber()))));
+        env->pushValue(Reference(std::make_shared<Value>(((bool)num1->getAsNumber()) | ((bool)num2->getAsNumber()))));
     }
+    void _xor(Environment* env, Instruction ins) {
+        Reference num1 = env->popValue();
+        Reference num2 = env->popValue();
 
-    void _xor(Executer* exe, Instruction ins) {
-        Reference num1 = exe->popValue();
-        Reference num2 = exe->popValue();
-
-        if (num1.getValue()->getType() != Value::NUMBER || num2.getValue()->getType() != Value::NUMBER)
+        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
             return;
 
-        exe->pushValue(Reference(std::make_shared<Value>(((bool)num1.getValue()->getAsNumber()) ^ ((bool)num2.getValue()->getAsNumber()))));
+        env->pushValue(Reference(std::make_shared<Value>(((bool)num1->getAsNumber()) ^ ((bool)num2->getAsNumber()))));
     }
-
+    void _jmp(Environment* env, Instruction ins) {
+        env->getExecuter().jmp(ins.op);
+    }
+    void _jt(Environment* env, Instruction ins) {
+        Reference ref = env->popValue();
+        if (ref->getType() != Value::NUMBER)
+            return;
+        if (! ref->getAsNumber())
+            return;
+        _jmp(env, ins);
+    }
+    void _jf(Environment* env, Instruction ins) {
+        Reference ref = env->popValue();
+        if (ref->getType() != Value::NUMBER)
+            return;
+        if (ref->getAsNumber())
+            return;
+        _jmp(env, ins);
+    }
+    void _ret(Environment* env, Instruction ins) {
+        auto info = env->getContext().methodStack.top();
+        env->getContext().methodStack.pop();
+        env->setClass(info.first.first, info.first.first.package);
+        env->setMethod(info.first.second);
+        env->getExecuter().jmp(info.second);
+    }
 
     void __ins_init() {
         ins_map[0x00] = _nop;
@@ -272,7 +295,10 @@ namespace Runtime {
         ins_map[0x12] = _neg;
         ins_map[0x13] = _and;
         ins_map[0x14] = _or;
-        ins_map[0x15] = _xor;
+        ins_map[0x15] = _jmp;
+        ins_map[0x16] = _jt;
+        ins_map[0x17] = _jf;
+        ins_map[0x18] = _ret;
         ins_map[0xff] = __test_printer;
     }
 
@@ -293,7 +319,7 @@ namespace Runtime {
             op = 0;
         }
         else {
-            op = reader.getAsLongLong();
+            op = reader.getAsLong();
         }
         return Instruction{ins_map[ins], typer, op};
     }

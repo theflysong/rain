@@ -1,7 +1,7 @@
 public test2
 method public static main(S[];)V#static
-    call "Rain.IO.inputAsInt()V#static"
-    call "Rain.IO.inputAsInt()V#static"
+    call "Rain.Console.inputAsInt()V#static"
+    call "Rain.Console.inputAsInt()V#static"
     add
-    call "Rain.IO.write(I;)V#static"
+    call "Rain.Console.write(I;)V#static"
     ret
