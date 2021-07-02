@@ -7,5 +7,6 @@
 std::string acceseToString(byte accese);
 std::string toString(bool flag);
 std::string replaceAll(std::string source, std::string from, std::string to);
+std::string typerToString(byte typer);
 
 #endif

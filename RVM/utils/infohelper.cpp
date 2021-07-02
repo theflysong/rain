@@ -44,7 +44,17 @@ void printFieldInfo(Runtime::Field field, Runtime::RainClass clazz) {
 }
 void printConstPool(std::vector<std::string> const_pool) {
     std::cout << "-------" << std::endl;
-    std::cout << "ConstPool" << std::endl;
+    std::cout << "Const Pool:" << std::endl;
     for (auto s : const_pool)
         std::cout << s << std::endl;
+}
+void printInstructions(std::vector<Runtime::Instruction> ins) {
+    std::cout << "-------" << std::endl;
+    std::cout << "Instructions:" << std::endl;
+    for (auto i : ins) {
+        std::cout << Runtime::name_map[i.handle] << " " << typerToString(i.typer);
+        if (i.typer)
+            std::cout << i.op;
+        std::cout << std::endl;
+    }
 }

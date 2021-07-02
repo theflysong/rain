@@ -6,6 +6,7 @@
 
 namespace Runtime {
     std::map<byte, ins_handle> ins_map;
+    std::map<ins_handle, std::string> name_map;
 
     struct TyperValue {
         Reference ref;
@@ -267,6 +268,10 @@ namespace Runtime {
         _jmp(env, ins);
     }
     void _ret(Environment* env, Instruction ins) {
+        if (env->getContext().methodStack.empty()) {
+            env->getExecuter().end();
+            return;
+        }
         auto info = env->getContext().methodStack.top();
         env->getContext().methodStack.pop();
         env->setClass(info.first.first, info.first.first.package);
@@ -300,6 +305,31 @@ namespace Runtime {
         ins_map[0x17] = _jf;
         ins_map[0x18] = _ret;
         ins_map[0xff] = __test_printer;
+        name_map[_nop] = "nop";
+        name_map[_add] = "add";
+        name_map[_sub] = "sub";
+        name_map[_mul] = "mul";
+        name_map[_div] = "div";
+        name_map[_mod] = "mod";
+        name_map[_shr] = "shr";
+        name_map[_shl] = "shl";
+        name_map[_push] = "push";
+        name_map[_pop] = "pop";
+        name_map[_call] = "call";
+        name_map[_sml] = "sml";
+        name_map[_big] = "big";
+        name_map[_equ] = "equ";
+        name_map[_seq] = "seq";
+        name_map[_beq] = "beq";
+        name_map[_not] = "not";
+        name_map[_neg] = "neg";
+        name_map[_and] = "and";
+        name_map[_or] = "or";
+        name_map[_jmp] = "jmp";
+        name_map[_jt] = "jt";
+        name_map[_jf] = "jf";
+        name_map[_ret] = "ret";
+        name_map[__test_printer] = "test_printer";
     }
 
     Instruction genIns(IByteReader& reader) {

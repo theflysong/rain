@@ -16,6 +16,10 @@ int main(int argc, char** argv) {
     ins.handle(&env, ins);*/
     env.setClass("test1");
     Runtime::RainClass& clazz = env.getContext().currentClass;
-    printClassInfo(clazz);
+    env.getExecuter().init();
+    //printClassInfo(clazz);
+    //printInstructions(env.getExecuter().getInstructions());
+    env.setMethod("main(S[];)V#static");
+    env.getExecuter().run(&env);
     return 0;
 }

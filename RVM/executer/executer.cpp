@@ -48,7 +48,7 @@ namespace Runtime {
     Environment::Environment(std::string workDirIn) : workDir(workDirIn), executer(context) {
     }
 
-    Executer::Executer(Context contextIn) : context(contextIn) {
+    Executer::Executer(Context &contextIn) : context(contextIn) {
     }
 
     void Executer::step(Environment *env) {
@@ -56,7 +56,8 @@ namespace Runtime {
     }
 
     void Executer::run(Environment *env) {
-        while (ins.size() != pi)
+        pi = env->getContext().currentMethod.attributes.start;
+        while (ins.size() > pi)
             step(env);
     }
 
@@ -66,12 +67,20 @@ namespace Runtime {
 
     void Executer::init() {
         __ins_init();
-        ins = __generateIns(context.currentClass.codes.first, context.currentClass.codes.second);
+        ins = __generateIns(context.currentClass.codes.first.get(), context.currentClass.codes.second);
         pi = 0;
     }
 
     void Executer::jmp(int pi) {
         this->pi = pi;
+    }
+
+    void Executer::end() {
+        jmp(ins.size());
+    }
+
+    std::vector<Instruction> Executer::getInstructions() {
+        return ins;
     }
 
     inline int getOpLen(byte typer) {
@@ -91,14 +100,14 @@ namespace Runtime {
         }
     }
 
-    std::vector<Instruction> Executer::__generateIns(std::shared_ptr<byte[]> ins, int insLen) {
+    std::vector<Instruction> Executer::__generateIns(byte* ins, int insLen) {
         std::vector<Instruction> insList;
-        for (int i = 0 ; i < insLen ; i ++) {
+        for (int i = 0 ; i < insLen ;) {
             byte opCode = ins[i ++];
             byte typer = ins[i ++];
             int oplen = getOpLen(typer);
             if (oplen == 0) {
-                insList.push_back({ins_map[opCode], typer, 0});
+                insList.push_back({ins_map[opCode], 0, 0});
                 continue;
             }
             byte *b_op = new byte[oplen];
@@ -109,12 +118,16 @@ namespace Runtime {
             switch (oplen) {
                 case 1:
                     op = b_op[0];
+                    break;
                 case 2:
                     op = asShort(b_op);
+                    break;
                 case 4:
                     op = asInt(b_op);
+                    break;
                 case 8:
                     op = asLong(b_op);
+                    break;
             }
             delete[] b_op;
             insList.push_back({ins_map[opCode], typer, op});

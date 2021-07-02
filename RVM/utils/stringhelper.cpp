@@ -26,3 +26,13 @@ std::string replaceAll(std::string source, std::string from, std::string to) {
     }
     return source;
 }
+
+std::string typerToString(byte typer) {
+    if (typer == 0)
+        return "";
+    if (typer == 1 || typer == 2)
+        return "&";
+    if (typer == 3 || typer == 4)
+        return "%";
+    return "$";
+}

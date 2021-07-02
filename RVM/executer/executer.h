@@ -21,14 +21,16 @@ namespace Runtime {
         Context& context;
         std::vector<Instruction> ins;
         int pi;
-        std::vector<Instruction> __generateIns(std::shared_ptr<byte[]> ins, int insLen);
+        std::vector<Instruction> __generateIns(byte* ins, int insLen);
     public:
-        Executer(Context contextIn);
+        Executer(Context &contextIn);
         void step(Environment *env);
         void run(Environment *env);
         void jmp(int pi);
         void init();
         void pushPi();
+        void end();
+        std::vector<Instruction> getInstructions();
     };
 
     class Environment {

@@ -1,8 +1,6 @@
 public test1
 method public static main(S[];)V#static
-    pop %0
-    push "Hello, World!"
-    call "Rain.Console.write(S;)V#static"
+    call "test1.test(V;)V#static"
     ret
 end
 method public static native test(V;)V#static
