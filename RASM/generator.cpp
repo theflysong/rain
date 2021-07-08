@@ -262,7 +262,7 @@ void generate(std::ostream& ostream, RainClass clazz, std::vector<std::string> i
             codes.push_back(p);
         }
         catch (std::string str) {
-            std::cout << str << std::endl;
+            std::cerr << str << std::endl;
         }
     }
 

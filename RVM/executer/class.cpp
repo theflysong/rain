@@ -3,6 +3,7 @@
 #define byte AAAAAAA
 #include <windows.h>
 #undef byte
+#include "executer.h"
 
 namespace Runtime {
     namespace ClassCreator {
@@ -127,5 +128,17 @@ namespace Runtime {
             rclass.gets(ptr.get(), length);
             return std::make_pair(ptr, length);
         }
+    }
+    std::pair<RainClass, Method> RainClass::findMethod(Environment* env, std::string methodName) {
+        if (method_pool.count(methodName)) {
+            return std::make_pair(*this, method_pool[methodName]);
+        }
+        for (auto p : parents) {
+            RainClass par_clazz = env->createClass(p);
+            auto m = par_clazz.findMethod(env, methodName);
+            if(m.second.name != "::empty_method")
+                return m;
+        }
+        return std::make_pair(*this, Method{{}, "::empty_method"});
     }
 }

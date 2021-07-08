@@ -12,5 +12,6 @@
 #define P_PRIVATE 0
 #define P_PROTECTED 1
 #define P_PUBLIC 2
+#define _VHAS(V, E) std::find(V.begin(), V.end(), E) != V.end()
 
 #endif

@@ -102,3 +102,45 @@ MethodInfo findMethod(const char* libName, const char* class_name, const char* m
     }
     return NULL_METHOD_INFO;
 }
+
+#include "../executer/executer.h"
+
+class RainUtilImpl : public RainUtil {
+    std::shared_ptr<RainReference> make_value() override {
+        return std::make_shared<Runtime::Reference>(std::make_shared<Runtime::Value>());
+    }
+    std::shared_ptr<RainReference> call_method(std::string method_path, RainReference* args, int argNum) override {
+        std::cout << "native call vm method" << std::endl;
+        return std::make_shared<Runtime::Reference>(std::make_shared<Runtime::Value>());
+    }
+    RainReference* nxtArg(RainReference* args) override {
+        return ((Runtime::Reference*)args) + 1;
+    }
+    RainReference& getNullReference() override {
+        return Runtime::NullReference;
+    }
+}__RainUtilImpl;
+
+void callMethod(Runtime::Environment* env, std::string method_name, MethodPointer method) {
+    int pos = method_name.find('(');
+    int arg_num = 0;
+    while (method_name[++ pos] != ')') {
+        arg_num ++;
+        if (method_name[pos] == '[') {
+            ++ pos;
+        }
+        if (method_name[pos] == '{') {
+            while (method_name[++ pos] != ';');
+        }
+    }
+
+    Runtime::Reference refs[arg_num];
+    int arg_num_ = arg_num;
+    while (--arg_num_ >= 0) {
+        refs[arg_num_] = env->popValue();
+    }
+    std::shared_ptr<RainReference> ref = method(&__RainUtilImpl, refs, arg_num);
+    if (Runtime::NullReference != *ref.get())
+        env->pushValue(((Runtime::Reference*)ref.get())->copy());
+}
+//WIP!!!!!

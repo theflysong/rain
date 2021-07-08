@@ -1,5 +1,5 @@
 #include "rdk.h"
-#include "class/object.h"
+#include "clazz/object.h"
 
 ClassInfo class_infos[] = {
     objectClass,

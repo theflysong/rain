@@ -2,7 +2,7 @@ OBJ := main.o reader/reader.o executer/class.o executer/value.o executer/instruc
 	executer/executer.o utils/bytehelper.o utils/stringhelper.o utils/rni_util.o utils/infohelper.o
 GPP := g++
 GPP_FLAGS_RELEASE := -s
-GPP_FLAGS := -std=c++11 -I "../RNI/"
+GPP_FLAGS := -std=c++14 -I "../RNI/"
 GPP_LIBS :=
 ifneq ($(OS),Windows_NT)
 	GPP_LIBS += -ldl

@@ -2,7 +2,7 @@ C_OBJ := main.o
 LD := ld
 LD_FLAGS:= -s
 GPP := g++
-GPP_FLAGS :=
+GPP_FLAGS := -std=c++14
 OUTPUT := bytecodewriter
 
 $(OUTPUT): $(C_OBJ)

@@ -19,12 +19,17 @@ namespace Runtime {
     }
 
     void Environment::setClass(std::string package) {
-        FileByteReader reader((workDir + p2cp(package) + ".rc"));
-        setClass(ClassCreator::createClass(reader), package);
+        setClass(createClass(package));
     }
 
-    void Environment::setClass(RainClass clazz, std::string package) {
+    RainClass Environment::createClass(std::string package) {
+        FileByteReader reader((workDir + p2cp(package) + ".rc"));
+        RainClass clazz = ClassCreator::createClass(reader);
         clazz.package = package;
+        return clazz;
+    }
+
+    void Environment::setClass(RainClass clazz) {
         this->context.currentClass = clazz;
     }
 
@@ -138,4 +143,6 @@ namespace Runtime {
     std::string p2cp(std::string package) {
         return replaceAll(package, ".", "/");
     }
+
+    Reference NullReference = Reference(std::shared_ptr<RainValue>((RainValue*)0));
 }

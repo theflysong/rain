@@ -3,8 +3,8 @@ LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=
 GPP := g++
-GPP_FLAGS_RELEASE := -std=c++11 -I "../../RNI/"
-GPP_FLAGS_DEBUG := -std=c++11 -I "../../RNI/"
+GPP_FLAGS_RELEASE := -std=c++14 -I "../../RNI/"
+GPP_FLAGS_DEBUG := -std=c++14 -I "../../RNI/"
 ifeq ($(OS),Windows_NT)
 	SHARED_GEN := -shared
 	OUTPUT := RdkNative.dll

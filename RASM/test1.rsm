@@ -1,7 +1,7 @@
 public test1
-method public static main(S[];)V#static
-    call "test1.test(V;)V#static"
+method public static main([S)V#static
+    call "test1.test()V#static"
     ret
 end
-method public static native test(V;)V#static
+method public static native test()V#static
 end

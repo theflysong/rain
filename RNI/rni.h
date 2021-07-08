@@ -2,34 +2,85 @@
 #define __RNI_H__
 
 #include <stdint.h>
+#include <string>
+#include <memory>
 
 #include "types.h"
 
-#define r_null r_value{0}
 
-struct r_object;
-struct r_value {
-    union {
-        r_long longV;
-        r_int intV;
-        r_short shortV;
-        r_byte byteV;
-        ur_long ulongV;
-        ur_int uintV;
-        ur_short ushortV;
-        ur_byte ubyteV;
-        r_real realV;
+class RainObject;
+class RainReference;
+
+class RainValue {
+public:
+    enum Type {
+        BYTE,
+        SHORT,
+        INT,
+        LONG,
+        REAL,
+        STRING,
+        OBJECT,
+        ARRAY
     };
-    r_object* objV;
+    virtual Type getType() = 0;
+    virtual void setType(Type type) = 0;
+    virtual void* getPointer() = 0;
+    virtual r_byte& getAsByte() = 0;
+    virtual r_short& getAsShort() = 0;
+    virtual r_int& getAsInt() = 0;
+    virtual r_long& getAsLong() = 0;
+    virtual r_real& getAsReal() = 0;
+    virtual RainObject& getAsObject() = 0;
+    virtual std::string& getAsString() = 0;
+    virtual RainReference& getAsArr() = 0;
+    virtual r_byte* getAsByteArr() = 0;
+    virtual r_short* getAsShortArr() = 0;
+    virtual r_int* getAsIntArr() = 0;
+    virtual r_long* getAsLongArr() = 0;
+    virtual r_real* getAsRealArr() = 0;
+    virtual RainObject* getAsObjectArr() = 0;
+    virtual std::string* getAsStringArr() = 0;
+    virtual RainReference* getAsArrArr() = 0;
+    virtual void set(r_byte value) = 0;
+    virtual void set(r_short value) = 0;
+    virtual void set(r_int value) = 0;
+    virtual void set(r_long value) = 0;
+    virtual void set(r_real value) = 0;
+    virtual void set(std::string value) = 0;
+    virtual void set(RainObject& value) = 0;
+    virtual void set(RainReference& value) = 0;
+    virtual bool isConst() = 0;
+    virtual bool isArray() = 0;
+    virtual int getArrLen() = 0;
+};
+
+class RainUtil {
+public:
+    virtual std::shared_ptr<RainReference> make_value() = 0;
+    virtual std::shared_ptr<RainReference> call_method(std::string method_path, RainReference* args, int argNum)  = 0;
+    virtual RainReference& getNullReference() = 0;
+    virtual RainReference* nxtArg(RainReference* args) = 0;
+};
+
+class RainObject {
+public:
+    virtual RainReference& getValue(std::string name) = 0;
+    virtual std::string getClassType() = 0;
+};
+
+class RainReference {
+public:
+    virtual std::shared_ptr<RainValue> operator->() = 0;
+    virtual std::shared_ptr<RainValue> getValue() = 0;
+    virtual bool operator==(RainReference& ref) = 0;
+    virtual bool operator!=(RainReference& ref) = 0;
 };
 
 #include <map>
 #include <string>
-struct r_object {
-    std::map<std::string, r_value> values;
-};
 
-typedef r_value(*MethodPointer)(r_value*, int);
+typedef std::shared_ptr<RainReference>(*MethodPointer)(RainUtil*, RainReference*, int);
 
 struct MethodInfo {
     const char* name;

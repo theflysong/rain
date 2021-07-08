@@ -41,14 +41,17 @@ namespace Runtime {
         Context& getContext();
         Executer& getExecuter();
         void setClass(std::string classpath);
-        void setClass(RainClass clazz, std::string classpath);
+        void setClass(RainClass clazz);
         void setMethod(std::string methodName);
         void setMethod(Method method);
+        RainClass createClass(std::string package);
         void pushValue(Reference ref);
         Reference popValue();
         void throwException(std::string exception);
         Environment(std::string workDirIn);
     };
+
+    extern Reference NullReference;
 
     std::string p2cp(std::string package);
 }

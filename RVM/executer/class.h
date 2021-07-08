@@ -10,6 +10,7 @@
 #include "method.h"
 #include "instruction.h"
 namespace Runtime {
+    class Environment;
     class RainClass {
     public:
         struct Attributes {
@@ -26,6 +27,7 @@ namespace Runtime {
         std::map<std::string, std::vector<std::string>> sub_attach_attr;
         std::pair<std::shared_ptr<byte[]>, int> codes;
         std::string package;
+        std::pair<RainClass, Method> findMethod(Environment* env, std::string methodName);
     };
 
     namespace ClassCreator {

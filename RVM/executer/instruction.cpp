@@ -1,5 +1,6 @@
 #include "instruction.h"
 #include "executer.h"
+#include "../utils/rni_util.h"
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
@@ -58,7 +59,7 @@ namespace Runtime {
 
     inline bool checkNative(Method method, RainClass clazz) {
         std::vector<std::string> attr = clazz.sub_attach_attr[method.name];
-        return std::find(attr.begin(), attr.end(), "native") != attr.end();
+        return _VHAS(attr, "native");
     }
 
     void _ret(Environment* env, Instruction ins);
@@ -68,68 +69,108 @@ namespace Runtime {
     }
     void _nop(Environment* env, Instruction ins) {
     }
+    template<typename Func> Reference __calc_helper(Reference num1, Func op) {
+        if (num1->getType() == Value::REAL)
+            return Reference(std::make_shared<Value>(op(num1->getAsReal())));
+        if (num1->getType() == Value::BYTE)
+            return Reference(std::make_shared<Value>(op(num1->getAsByte())));
+        if (num1->getType() == Value::SHORT)
+            return Reference(std::make_shared<Value>(op(num1->getAsShort())));
+        if (num1->getType() == Value::INT)
+            return Reference(std::make_shared<Value>(op(num1->getAsInt())));
+        if (num1->getType() == Value::LONG)
+            return Reference(std::make_shared<Value>(op(num1->getAsLong())));
+        throw "Invalid Value Type for Calc";
+    }
+    template<typename Func> Reference __calc_helper(Reference num1, Reference num2, Func op) {
+        if (num1->getType() == Value::REAL && num2->getType() == Value::REAL)
+            return Reference(std::make_shared<Value>(op(num1->getAsReal(), num2->getAsReal())));
+        if (num1->getType() == Value::BYTE && num2->getType() == Value::BYTE)
+            return Reference(std::make_shared<Value>(op(num1->getAsByte(), num2->getAsByte())));
+        if (num1->getType() == Value::SHORT && num2->getType() == Value::SHORT)
+            return Reference(std::make_shared<Value>(op(num1->getAsShort(), num2->getAsShort())));
+        if (num1->getType() == Value::INT && num2->getType() == Value::INT)
+            return Reference(std::make_shared<Value>(op(num1->getAsInt(), num2->getAsInt())));
+        if (num1->getType() == Value::LONG && num2->getType() == Value::LONG)
+            return Reference(std::make_shared<Value>(op(num1->getAsLong(), num2->getAsLong())));
+        throw "Invalid Value Type for Calc";
+    }
+    template<typename Func> Reference __int_calc_helper(Reference num1, Func op) {
+        if (num1->getType() == Value::BYTE)
+            return Reference(std::make_shared<Value>(op(num1->getAsByte())));
+        if (num1->getType() == Value::SHORT)
+            return Reference(std::make_shared<Value>(op(num1->getAsShort())));
+        if (num1->getType() == Value::INT)
+            return Reference(std::make_shared<Value>(op(num1->getAsInt())));
+        if (num1->getType() == Value::LONG)
+            return Reference(std::make_shared<Value>(op(num1->getAsLong())));
+        throw "Invalid Value Type for Calc";
+    }
+    template<typename Func> Reference __int_calc_helper(Reference num1, Reference num2, Func op) {
+        if (num1->getType() == Value::BYTE && num2->getType() == Value::BYTE)
+            return Reference(std::make_shared<Value>(op(num1->getAsByte(), num2->getAsByte())));
+        if (num1->getType() == Value::SHORT && num2->getType() == Value::SHORT)
+            return Reference(std::make_shared<Value>(op(num1->getAsShort(), num2->getAsShort())));
+        if (num1->getType() == Value::INT && num2->getType() == Value::INT)
+            return Reference(std::make_shared<Value>(op(num1->getAsInt(), num2->getAsInt())));
+        if (num1->getType() == Value::LONG && num2->getType() == Value::LONG)
+            return Reference(std::make_shared<Value>(op(num1->getAsLong(), num2->getAsLong())));
+        throw "Invalid Value Type for Calc";
+    }
+    r_long __getValueAsLong(Reference num1) {
+        if (num1->getType() == Value::REAL)
+            return num1->getAsReal();
+        if (num1->getType() == Value::BYTE)
+            return num1->getAsByte();
+        if (num1->getType() == Value::SHORT)
+            return num1->getAsShort();
+        if (num1->getType() == Value::INT)
+            return num1->getAsInt();
+        if (num1->getType() == Value::LONG)
+            return num1->getAsLong();
+        throw "Invalid Value Type for Calc";
+    }
     void _add(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() + num2->getAsNumber())));
+        env->pushValue(__calc_helper(num1, num2, [](auto a, auto b){return a + b;}));
     }
     void _sub(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() - num2->getAsNumber())));
+        env->pushValue(__calc_helper(num1, num2, [](auto a, auto b){return a - b;}));
     }
     void _mul(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() * num2->getAsNumber())));
+        env->pushValue(__calc_helper(num1, num2, [](auto a, auto b){return a * b;}));
     }
     void _div(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() / num2->getAsNumber())));
+        env->pushValue(__calc_helper(num1, num2, [](auto a, auto b){return a / b;}));
     }
     void _mod(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(((int)num1->getAsNumber()) % ((int)num2->getAsNumber()))));
+        env->pushValue(__int_calc_helper(num1, num2, [](auto a, auto b){return a % b;}));
     }
     void _shr(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(((int)num1->getAsNumber()) >> ((int)num2->getAsNumber()))));
+        env->pushValue(__int_calc_helper(num1, num2, [](auto a, auto b){return a >> b;}));
     }
     void _shl(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(((int)num1->getAsNumber()) << ((int)num2->getAsNumber()))));
+        env->pushValue(__int_calc_helper(num1, num2, [](auto a, auto b){return a << b;}));
     }
     void _push(Environment* env, Instruction ins) {
         TyperValue tv = getByTyper(env, ins.typer, ins.op);
@@ -151,121 +192,90 @@ namespace Runtime {
         if (env->getContext().currentClass.package != package) {
             env->setClass(package);
         }
-        Method method = env->getContext().currentClass.method_pool[methodName];
+        auto r_m = env->getContext().currentClass.findMethod(env, methodName);
+        auto method = r_m.second;
+        env->setClass(r_m.first);
         env->setMethod(method);
         if (checkNative(method, env->getContext().currentClass)) {
-            std::cout << "It's native method";
+            MethodInfo info = findMethod("RdkNative", package.c_str(), methodName.c_str());
+            if (info.method) {
+                callMethod(env, methodName, info.method);
+            }
             _ret(env, ins);
             return;
         }
         env->getExecuter().jmp(method.attributes.start);
     }
     void _sml(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() < num2->getAsNumber())));
+        env->pushValue(__calc_helper(num1, num2, [](auto a, auto b){return a < b;}));
     }
     void _big(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() > num2->getAsNumber())));
+        env->pushValue(__calc_helper(num1, num2, [](auto a, auto b){return a > b;}));
     }
     void _equ(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() == num2->getAsNumber())));
+        env->pushValue(__calc_helper(num1, num2, [](auto a, auto b){return a == b;}));
     }
     void _seq(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() <= num2->getAsNumber())));
+        env->pushValue(__calc_helper(num1, num2, [](auto a, auto b){return a <= b;}));
     }
     void _beq(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(num1->getAsNumber() >= num2->getAsNumber())));
+        env->pushValue(__calc_helper(num1, num2, [](auto a, auto b){return a >= b;}));
     }
     void _not(Environment* env, Instruction ins) {
         Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(!(bool)num1->getAsNumber())));
+        env->pushValue(__int_calc_helper(num1, [](auto a){return !a;}));
     }
     void _neg(Environment* env, Instruction ins) {
         Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(-num1->getAsNumber())));
+        env->pushValue(__calc_helper(num1, [](auto a){return -a;}));
     }
     void _and(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(((bool)num1->getAsNumber()) & ((bool)num2->getAsNumber()))));
+        env->pushValue(__int_calc_helper(num1, num2, [](auto a, auto b){return a & b;}));
     }
     void _or(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(((bool)num1->getAsNumber()) | ((bool)num2->getAsNumber()))));
+        env->pushValue(__int_calc_helper(num1, num2, [](auto a, auto b){return a | b;}));
     }
     void _xor(Environment* env, Instruction ins) {
-        Reference num1 = env->popValue();
         Reference num2 = env->popValue();
+        Reference num1 = env->popValue();
 
-        if (num1->getType() != Value::NUMBER || num2->getType() != Value::NUMBER)
-            return;
-
-        env->pushValue(Reference(std::make_shared<Value>(((bool)num1->getAsNumber()) ^ ((bool)num2->getAsNumber()))));
+        env->pushValue(__int_calc_helper(num1, num2, [](auto a, auto b){return a ^ b;}));
     }
     void _jmp(Environment* env, Instruction ins) {
         env->getExecuter().jmp(ins.op);
     }
     void _jt(Environment* env, Instruction ins) {
         Reference ref = env->popValue();
-        if (ref->getType() != Value::NUMBER)
-            return;
-        if (! ref->getAsNumber())
-            return;
-        _jmp(env, ins);
+        if (__getValueAsLong(ref))
+            _jmp(env, ins);
     }
     void _jf(Environment* env, Instruction ins) {
         Reference ref = env->popValue();
-        if (ref->getType() != Value::NUMBER)
-            return;
-        if (ref->getAsNumber())
-            return;
-        _jmp(env, ins);
+        if (! __getValueAsLong(ref))
+            _jmp(env, ins);
     }
     void _ret(Environment* env, Instruction ins) {
         if (env->getContext().methodStack.empty()) {
@@ -274,7 +284,7 @@ namespace Runtime {
         }
         auto info = env->getContext().methodStack.top();
         env->getContext().methodStack.pop();
-        env->setClass(info.first.first, info.first.first.package);
+        env->setClass(info.first.first);
         env->setMethod(info.first.second);
         env->getExecuter().jmp(info.second);
     }

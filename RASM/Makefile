@@ -3,8 +3,8 @@ LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=
 GPP := g++
-GPP_FLAGS_RELEASE := -std=c++11 -s
-GPP_FLAGS_DEBUG := -std=c++11
+GPP_FLAGS_RELEASE := -std=c++14 -s
+GPP_FLAGS_DEBUG := -std=c++14
 OUTPUT := rasm
 CONFIGER := ../configer/configer
 
