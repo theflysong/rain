@@ -1,7 +1,6 @@
 public test1
-method public static main([S)V#static
-    call "test1.test()V#static"
+method public static main([s)V#static
+    push "YESSSSSS"
+    call "rain.lang.System.print(s)V#static"
     ret
-end
-method public static native test()V#static
 end

@@ -134,11 +134,16 @@ void callMethod(Runtime::Environment* env, std::string method_name, MethodPointe
         }
     }
 
+    if (method_name.find("#static") == std::string::npos)
+        arg_num ++;
+
     Runtime::Reference refs[arg_num];
     int arg_num_ = arg_num;
+
     while (--arg_num_ >= 0) {
         refs[arg_num_] = env->popValue();
     }
+
     std::shared_ptr<RainReference> ref = method(&__RainUtilImpl, refs, arg_num);
     if (Runtime::NullReference != *ref.get())
         env->pushValue(((Runtime::Reference*)ref.get())->copy());

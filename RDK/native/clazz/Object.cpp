@@ -1,5 +1,4 @@
 #include "Object.h"
-#include <iostream>
 
 std::shared_ptr<RainReference> _Object_finalize(RainUtil* util, RainReference* args, int argSum) {
     return std::shared_ptr<RainReference>(&util->getNullReference());

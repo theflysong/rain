@@ -1,8 +1,9 @@
 #include "rdk.h"
-#include "clazz/object.h"
+#include "clazz/packages_info.h"
+#include "lang/packages_info.h"
 
 ClassInfo class_infos[] = {
-    objectClass,
+    objectClass, systemClass,
     NULL_CLASS_INFO
 };
 

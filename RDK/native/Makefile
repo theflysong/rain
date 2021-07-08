@@ -1,4 +1,4 @@
-OBJ := rdk.o clazz/Object.o
+OBJ := rdk.o clazz/Object.o lang/System.o
 LD := ld
 LD_FLAGS_RELEASE := -s
 LD_FLAGS_DEBUG :=
