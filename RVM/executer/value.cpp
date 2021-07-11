@@ -5,16 +5,27 @@ namespace Runtime {
 
     }
 
-    Object::Object(Object* obj) {
-        this->values = obj->values;
-        this->class_type = obj->class_type;
+    Object::Object(RainObject* obj) {
+        auto _values = obj->getValues();
+        for (auto p : _values)
+            this->values[p.first] = Reference(p.second);
+        this->class_type = obj->getClassType();
     }
 
-    Object::Object(Object& obj) {
-        this->values = obj.values;
-        this->class_type = obj.class_type;
+    Object::Object(RainObject& obj) {
+        auto _values = obj.getValues();
+        for (auto p : _values)
+            this->values[p.first] = Reference(p.second);
+        this->class_type = obj.getClassType();
     }
 
+    std::map<std::string, RainReference*> Object::getValues() {
+        std::map<std::string, RainReference*> _values;
+        for (auto p : values) {
+            _values[p.first] = &p.second;
+        }
+        return _values;
+    }
 
     RainReference& Object::getValue(std::string name) {
         return this->values[name];
@@ -252,7 +263,7 @@ namespace Runtime {
         this->type = STRING;
     }
 
-    Value::Value(Object value, bool is_const, bool is_arr, int arrLen) {
+    Value::Value(RainObject& value, bool is_const, bool is_arr, int arrLen) {
         if (is_arr) {
             arrlen = arrLen;
             pObj = new Object[arrLen];
@@ -264,7 +275,7 @@ namespace Runtime {
         this->type = OBJECT;
     }
 
-    Value::Value(Reference value, int arrLen, bool is_const) {
+    Value::Value(RainReference* value, int arrLen, bool is_const) {
         arrlen = arrLen;
         pArr = new Reference[arrLen];
         this->iconst = is_const;
@@ -277,7 +288,7 @@ namespace Runtime {
             if (iarr)
                 delete (int*)pointer;
             else
-                delete[] pointer;
+                delete[] (int*)pointer;
     }
 
     bool Value::isConst() {
@@ -289,6 +300,15 @@ namespace Runtime {
     }
 
     Reference::Reference() {
+    }
+
+
+    Reference::Reference(RainReference& ref) {
+        this->ptr = ref.getValue();
+    }
+
+    Reference::Reference(RainReference* ref) {
+        this->ptr = ref->getValue();
     }
 
     Reference::Reference(std::shared_ptr<RainValue> _ptr) : ptr(_ptr){

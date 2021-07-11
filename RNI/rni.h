@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <string>
 #include <memory>
+#include <map>
 
 #include "types.h"
 
@@ -65,6 +66,7 @@ public:
 
 class RainObject {
 public:
+    virtual std::map<std::string, RainReference*> getValues() = 0;
     virtual RainReference& getValue(std::string name) = 0;
     virtual std::string getClassType() = 0;
 };

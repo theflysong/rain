@@ -1,6 +1,14 @@
 public test1
+field public static a
+field public e
 method public static main([s)V#static
-    push "YESSSSSS"
-    call "rain.lang.System.print(s)V#static"
+    pop %0
+    push "test1.a
+    lst %1
+    push $1
+    pop %1
+    ret
+end
+method public static ::static
     ret
 end

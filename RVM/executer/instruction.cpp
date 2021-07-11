@@ -287,6 +287,106 @@ namespace Runtime {
         env->setClass(info.first.first);
         env->setMethod(info.first.second);
         env->getExecuter().jmp(info.second);
+        env->getContext().variablePool = env->getContext().vpStack.top();
+        env->getContext().vpStack.pop();
+    }
+
+    void _lfd(Environment* env, Instruction ins) {
+        auto obj = env->popValue();
+        auto name = env->popValue();
+        RainReference& fd = obj->getAsObject().getValue(name->getAsString());
+        env->getContext().variablePool[ins.op] = Reference(fd);
+    }
+
+    void _lst(Environment* env, Instruction ins) {
+        auto name = env->popValue()->getAsString();
+        auto clazz = name.substr(0, name.find_last_of('.'));
+        auto var_name = name.substr(name.find_last_of('.') + 1);
+        env->loadStatic(clazz);
+        env->getContext().variablePool[ins.op] = env->getContext().staticPool[clazz][var_name];
+    }
+
+    void _pfd(Environment* env, Instruction ins) {
+        auto obj = env->popValue();
+        auto name = env->getContext().currentClass.const_pool[ins.op];
+        RainReference& fd = obj->getAsObject().getValue(name);
+        env->pushValue(Reference(fd));
+    }
+
+    void _pst(Environment* env, Instruction ins) {
+        auto name = env->getContext().currentClass.const_pool[ins.op];
+        auto clazz = name.substr(0, name.find_last_of('.'));
+        auto var_name = name.substr(name.find_last_of('.') + 1);
+        env->loadStatic(clazz);
+        env->pushValue(env->getContext().staticPool[clazz][var_name]);
+    }
+
+    template<typename Func> void __arr_helper(Reference num1, Func op) {
+        if (num1->getType() == Value::REAL)
+            op(num1->getAsRealArr());
+        if (num1->getType() == Value::BYTE)
+            op(num1->getAsByteArr());
+        if (num1->getType() == Value::SHORT)
+            op(num1->getAsShortArr());
+        if (num1->getType() == Value::INT)
+            op(num1->getAsIntArr());
+        if (num1->getType() == Value::LONG)
+            op(num1->getAsLongArr());
+        if (num1->getType() == Value::STRING)
+            op(num1->getAsStringArr());
+        if (num1->getType() == Value::OBJECT)
+            op(num1->getAsObjectArr());
+        throw "Invalid Value Type";
+    }
+
+    template<typename Func> void __normal_arr_helper(Reference num1, Func op) {
+        if (num1->getType() == Value::REAL)
+            op(num1->getAsRealArr());
+        if (num1->getType() == Value::BYTE)
+            op(num1->getAsByteArr());
+        if (num1->getType() == Value::SHORT)
+            op(num1->getAsShortArr());
+        if (num1->getType() == Value::INT)
+            op(num1->getAsIntArr());
+        if (num1->getType() == Value::LONG)
+            op(num1->getAsLongArr());
+        if (num1->getType() == Value::STRING)
+            op(num1->getAsStringArr());
+        throw "Invalid Value Type";
+    }
+
+    void _par(Environment* env, Instruction ins) {
+        auto arr = env->popValue();
+        int no = 0;
+        TyperValue tv = getByTyper(env, ins.typer, ins.op);
+        if (tv.isValue)
+            no = tv.value;
+        if (tv.isCon)
+            no = atoi(tv.con.c_str());
+        if (tv.isRef)
+            no = tv.ref->getAsLong();
+        if (arr->getType() != RainValue::ARRAY)
+            __arr_helper(arr, [no, env](auto arr){env->pushValue(Reference(std::make_shared<Value>(arr[no])));});
+        else
+            env->pushValue(Reference(arr->getAsArrArr()+no));
+    }
+
+    void _ptar(Environment* env, Instruction ins) {
+        auto arr = env->popValue();
+        int no = 0;
+        TyperValue tv = getByTyper(env, ins.typer, ins.op);
+        if (tv.isValue)
+            no = tv.value;
+        if (tv.isCon)
+            no = atoi(tv.con.c_str());
+        if (tv.isRef)
+            no = tv.ref->getAsLong();
+        __normal_arr_helper(arr, [no, env](auto arr){
+            __calc_helper(env->popValue(), [&arr, no](auto num){
+                arr[no]=num;
+                return 0;});
+            }
+        );
     }
 
     void __ins_init() {
@@ -314,7 +414,13 @@ namespace Runtime {
         ins_map[0x16] = _jt;
         ins_map[0x17] = _jf;
         ins_map[0x18] = _ret;
-        ins_map[0xff] = __test_printer;
+        ins_map[0x19] = _lfd;
+        ins_map[0x1A] = _lst;
+        ins_map[0x1B] = _pfd;
+        ins_map[0x1C] = _pst;
+        ins_map[0x1D] = _par;
+        ins_map[0x1E] = _ptar;
+        ins_map[0xFF] = __test_printer;
         name_map[_nop] = "nop";
         name_map[_add] = "add";
         name_map[_sub] = "sub";
@@ -339,6 +445,12 @@ namespace Runtime {
         name_map[_jt] = "jt";
         name_map[_jf] = "jf";
         name_map[_ret] = "ret";
+        name_map[_lfd] = "lfd";
+        name_map[_lst] = "lst";
+        name_map[_pfd] = "pfd";
+        name_map[_pst] = "pst";
+        name_map[_par] = "par";
+        name_map[_ptar] = "ptar";
         name_map[__test_printer] = "test_printer";
     }
 

@@ -7,6 +7,10 @@ FileByteReader::FileByteReader(std::string filename) {
     this->load(filename);
 }
 
+FileByteReader::~FileByteReader() {
+    clr();
+}
+
 byte FileByteReader::next() {
     return datas[cr_pos ++];
 }
@@ -28,19 +32,28 @@ byte FileByteReader::skip(int num) {
 }
 
 bool FileByteReader::clr() {
-    datas.clear();
+    if (datas == NULL)
+        return true;
+    delete[] datas;
+    datas = NULL;
     return true;
 }
 
 bool FileByteReader::load(std::string filename) {
     this->cr_pos = 0;
-    std::ifstream fin(filename.c_str());
+    std::ifstream fin(filename.c_str(), std::ios::binary);
     if (fin.bad()) {
         return false;
     }
-    while (! fin.eof()) {
-        datas.push_back(fin.get());
+    fin.seekg(0, std::ifstream::end);
+    int size = fin.tellg();
+    fin.close();
+    fin.open(filename.c_str(), std::ios::binary);
+    if (fin.bad()) {
+        return false;
     }
+    datas = new byte[size];
+    fin.read(datas, size);
     return true;
 }
 

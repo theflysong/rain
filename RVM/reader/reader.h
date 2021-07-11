@@ -30,10 +30,11 @@ public:
 };
 
 class FileByteReader : public IByteReader {
-    std::vector<byte> datas;
+    byte* datas;
     int cr_pos;
 public:
     FileByteReader(std::string filename);
+    ~FileByteReader();
     byte* gets(byte* out, int num) override final;
     r_short getAsShort() override final;
     r_int getAsInt() override final;

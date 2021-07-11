@@ -145,7 +145,7 @@ void callMethod(Runtime::Environment* env, std::string method_name, MethodPointe
     }
 
     std::shared_ptr<RainReference> ref = method(&__RainUtilImpl, refs, arg_num);
-    if (Runtime::NullReference != *ref.get())
-        env->pushValue(((Runtime::Reference*)ref.get())->copy());
+    if (Runtime::NullReference != *ref.get());
+        env->pushValue(Runtime::Reference(ref.get()).copy());
 }
 //WIP!!!!!

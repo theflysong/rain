@@ -12,8 +12,9 @@ namespace Runtime {
         std::string class_type;
     public:
         Object();
-        Object(Object* obj);
-        Object(Object& obj);
+        Object(RainObject* obj);
+        Object(RainObject& obj);
+        std::map<std::string, RainReference*> getValues() override;
         RainReference& getValue(std::string name) override;
         std::string getClassType() override;
     };
@@ -43,8 +44,8 @@ namespace Runtime {
         Value(r_long value, bool is_const = false, bool is_arr = false, int arrLen = 0);
         Value(r_real value, bool is_const = false, bool is_arr = false, int arrLen = 0);
         Value(std::string value, bool is_const = false, bool is_arr = false, int arrLen = 0);
-        Value(Object value, bool is_const = false, bool is_arr = false, int arrLen = 0);
-        Value(Reference value, int arrLen, bool is_const = false);
+        Value(RainObject& value, bool is_const = false, bool is_arr = false, int arrLen = 0);
+        Value(RainReference* value, int arrLen, bool is_const = false);
         ~Value();
         Type getType() override;
         void setType(Type type) override;
@@ -82,6 +83,8 @@ namespace Runtime {
         std::shared_ptr<RainValue> ptr;
     public:
         Reference();
+        Reference(RainReference& ref);
+        Reference(RainReference* ref);
         Reference(std::shared_ptr<Value> _ptr);
         Reference(std::shared_ptr<RainValue> _ptr);
         std::shared_ptr<RainValue> getValue() override;
